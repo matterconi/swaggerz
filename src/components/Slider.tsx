@@ -100,7 +100,7 @@ export default function Slider({ items }: SliderProps) {
         </div>
 
         <div className="relative">
-          <div className="relative px-8 ">
+          <div className="relative px-8 max-sm:px-4">
             <div className="py-8  w-full flex items-center justify-center">
               
               {/* Container che definisce la larghezza del contenuto */}
@@ -166,9 +166,12 @@ export default function Slider({ items }: SliderProps) {
                         {items.map((p, i) => (
                         <div
                             key={p.id}
-                            className="embla__slide flex-none w-full max-sm:w-full sm:w-[calc(50%-8px)] lg:w-[350px]"
+                            className="embla__slide flex-none 
+                                max-sm:w-[calc(100%)]  
+                                sm:w-[calc(50%-8px)] 
+                                lg:w-[350px]"
                         >
-                            <Card
+                                                    <Card
                             title={p.title}
                             description={p.description || "No description available"}
                             imageSrc={`/shoes/shoe-${6 + i}.avif`}
