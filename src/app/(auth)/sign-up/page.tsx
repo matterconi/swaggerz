@@ -228,7 +228,7 @@ export default function SignUpPage() {
           </div>
           <p className="text-white text-xs font-medium mb-1">10K+ membri attivi</p>
           <p className="text-zinc-400 text-xs">
-            "La community streetwear più autentica"
+            &quot;La community streetwear più autentica&quot;
           </p>
         </div>
       </div>

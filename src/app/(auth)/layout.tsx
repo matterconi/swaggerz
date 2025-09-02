@@ -38,7 +38,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                 </span>
               </h1>
               <p className="text-base sm:text-lg text-zinc-200 leading-relaxed font-medium">
-                L'autenticità della strada italiana
+                L&apos;autenticità della strada italiana
               </p>
             </div>
           </div>
@@ -64,10 +64,10 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
                   <div className="space-y-3">
                     <p className="text-lg xl:text-xl text-zinc-200 leading-relaxed max-w-md font-medium">
-                      L'autenticità della strada italiana
+                      L&apos;autenticità della strada italiana
                     </p>
                     <p className="text-base text-zinc-400 leading-relaxed max-w-md">
-                      Unisciti alla community di streetwear più esclusiva d'Italia
+                      Unisciti alla community di streetwear più esclusiva d&apos;Italia
                     </p>
                   </div>
                 </div>

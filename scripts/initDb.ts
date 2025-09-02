@@ -6,7 +6,6 @@ import path from 'path';
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 import { getDb } from '@/db/index';
-import { drizzle } from 'drizzle-orm/neon-http';
 
 async function main() {
   console.log('DATABASE_URL caricata:', process.env.DATABASE_URL ? 'OK' : 'MANCANTE');

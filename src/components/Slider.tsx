@@ -6,7 +6,21 @@ import { useState, useCallback, useEffect } from "react";
 // Importa Card dal file originale (assumiamo che sia disponibile)
 import Card from "./Card";
 
-export default function Slider({ items }: { items: any[] }) {
+// Define proper types for the slider items
+interface SliderItem {
+  id: string | number;
+  title: string;
+  description: string;
+  priceCents: number;
+  // Add other properties as needed based on your data structure
+  [key: string]: unknown; // For any additional properties
+}
+
+interface SliderProps {
+  items: SliderItem[];
+}
+
+export default function Slider({ items }: SliderProps) {
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
