@@ -8,10 +8,12 @@ import Card from "./Card";
 
 // Define proper types for the slider items
 interface SliderItem {
-  id: string | number;
+  id: number;
   title: string;
-  description: string;
+  description: string | null;
   priceCents: number;
+  imageUrl: string | null;
+  createdAt: Date;
   // Add other properties as needed based on your data structure
   [key: string]: unknown; // For any additional properties
 }
@@ -168,7 +170,7 @@ export default function Slider({ items }: SliderProps) {
                         >
                             <Card
                             title={p.title}
-                            description={p.description}
+                            description={p.description || "No description available"}
                             imageSrc={`/shoes/shoe-${6 + i}.avif`}
                             price={p.priceCents / 100}
                             href={"/#"}
