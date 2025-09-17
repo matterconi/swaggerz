@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { authClient } from '@/lib/auth-client'; // ✅ Solo client-side imports
-
+import { authClient } from '@/lib/auth-client';
 
 export function useAuth() {
   const [data, setData] = useState<any>(null);
@@ -33,7 +32,7 @@ export function useAuth() {
       setError(null);
       await authClient.signIn.social({
         provider,
-        callbackURL: '/dashboard', // Redirect dopo login
+        callbackURL: '/dashboard',
       });
     } catch (err) {
       console.error(`Errore login ${provider}:`, err);
@@ -49,7 +48,7 @@ export function useAuth() {
         fetchOptions: {
           onSuccess: () => {
             setData(null);
-            window.location.href = '/'; // Redirect dopo logout
+            window.location.href = '/';
           },
         },
       });
@@ -76,22 +75,34 @@ export function useAuth() {
     setError(null);
   };
 
-  // Send magic link using Better Auth
+  // ✅ Send magic link migliorato con nuovo callbackURL
   const sendMagicLink = async (email: string) => {
     try {
       setError(null);
       setLoading(true);
 
+      console.log('🔄 Invio magic link per:', email);
+
       const response = await authClient.signIn.magicLink({
         email,
-        callbackURL: '/dashboard',
+        callbackURL: '/verify-callback', // ✅ Nuova pagina intermedia
       });
 
       console.log('✅ Magic link sent via Better Auth:', response);
       return response;
-    } catch (err) {
+    } catch (err: any) {
       console.error('❌ Errore invio magic link:', err);
-      setError('Errore durante l\'invio del magic link');
+      
+      // ✅ Gestione errori più dettagliata
+      if (err?.error?.code === 'INVALID_EMAIL') {
+        setError('Email non valida');
+      } else if (err?.error?.code === 'USER_NOT_FOUND') {
+        // Better Auth crea automaticamente l'utente, questo errore non dovrebbe comparire
+        setError('Errore durante la registrazione');
+      } else {
+        setError('Errore durante l\'invio del magic link');
+      }
+      
       throw err;
     } finally {
       setLoading(false);

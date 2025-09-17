@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { SwagLoader } from "@/components/SwagLoader";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -8,10 +11,31 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const router = useRouter();
+  const { isAuthenticated, loading } = useAuth();
+
+  // Check for existing session and redirect if authenticated
+  useEffect(() => {
+    if (!loading) {
+      if (isAuthenticated) {
+        router.push('/dashboard');
+        return;
+      }
+      setIsCheckingSession(false);
+    }
+  }, [isAuthenticated, loading, router]);
 
   useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+    if (!isCheckingSession) {
+      setIsLoaded(true);
+    }
+  }, [isCheckingSession]);
+
+  // Show loader while checking session
+  if (isCheckingSession) {
+    return <SwagLoader />;
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 font-jost">
@@ -26,11 +50,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <div className="relative w-full max-w-7xl mx-auto">
           {/* Header mobile - posizionato in alto */}
           <div className="lg:hidden mb-8 sm:mb-12 text-center">
-            <div
-              className={`transform transition-all duration-1000 ease-out ${
-                isLoaded ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-              }`}
-            >
+            <div>
               <h1 className="text-4xl sm:text-5xl font-black leading-tight tracking-tight mb-3">
                 <span className="block text-white">Swaggerz</span>
                 <span className="block bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent">
@@ -47,11 +67,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 xl:gap-20 items-center">
             
             {/* Left side - Brand (desktop only) */}
-            <div
-              className={`hidden lg:block space-y-8 xl:space-y-10 transform transition-all duration-1000 ease-out ${
-                isLoaded ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-              }`}
-            >
+            <div className="hidden lg:block space-y-8 xl:space-y-10">
               <div className="space-y-6">
                 {/* Main value proposition */}
                 <div className="space-y-5">
@@ -135,11 +151,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             </div>
 
             {/* Right side - Auth form */}
-            <div
-              className={`transform transition-all duration-1000 delay-200 ease-out ${
-                isLoaded ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-              }`}
-            >
+            <div>
               <div className="relative">
                 {/* Glow effect */}
                 <div className="absolute -inset-3 sm:-inset-4 bg-gradient-to-r from-zinc-800/20 to-zinc-700/10 rounded-2xl blur-xl"></div>
@@ -156,9 +168,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             {/* Features mobile - sotto il form */}
             <div className="lg:hidden col-span-full">
               <div
-                className={`space-y-6 transform transition-all duration-1000 delay-400 ease-out ${
-                  isLoaded ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-                }`}
+                className="space-y-6"
               >
                 {/* Benefici per mobile */}
                 <div className="space-y-4">
