@@ -115,8 +115,8 @@ export default function Navbar({ links = defaultLinks, cartCount = 2 }: NavbarPr
         >
           <div className="flex items-center justify-between h-20 px-6 border-b border-dark-500/30">
             <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
-              <span className="block bg-gradient-to-r from-red-500 via-yellow-500 via-blue-500 to-green-500 bg-clip-text text-transparent font-bold text-2xl tracking-tight">
-                REBKON
+              <span className="block bg-gradient-to-r from-red-500 to-yellow-500 bg-clip-text text-transparent font-bold text-2xl tracking-tight">
+                SWAGGERZ
               </span>
             </Link>
             

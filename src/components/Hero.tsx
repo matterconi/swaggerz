@@ -1,166 +1,137 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
-import Image from 'next/image';
+import { ArrowRight, Flame } from 'lucide-react';
+import { collections } from '@/constants/heroCollections';
+import HeroDropCard from './HeroDropCard';
 
 const RebkonHero = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [currentCollection, setCurrentCollection] = useState(0);
 
+  // Auto-rotate collections - more slow for better user experience
   useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+    const interval = setInterval(() => {
+      setCurrentCollection((prev) => (prev + 1) % collections.length);
+    }, 6000); // Increased from 4s to 6s
+    return () => clearInterval(interval);
+  }, [collections.length]);
 
   return (
-    <section className="relative min-h-screen bg-zinc-950 overflow-hidden font-jost max-lg:py-16">
-      {/* Subtle background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-black opacity-80"></div>
-      <div className="absolute top-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-red-500/5 to-orange-500/5 rounded-full blur-3xl"></div>
-      
+    <section
+      className="relative min-h-screen bg-zinc-950 font-jost max-lg:py-10"
+    >
+      {/* Refined background */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-black opacity-90"
+      />
+      <div
+        className="absolute top-1/3 left-1/4 w-64 h-64 bg-gradient-to-r from-red-500/3 to-orange-500/3 rounded-full blur-3xl"
+      />
+
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 py-20 flex items-center min-h-screen">
-        <div className="grid lg:grid-cols-2 gap-24 items-center justify-center w-full">
-          
+      <div className="relative z-10 container mx-auto px-6 py-16 lg:py-20 flex items-center min-h-screen">
+        <div
+          className="grid lg:grid-cols-2 gap-12 xl:gap-20 2xl:gap-24 items-center justify-center w-full"
+        >
+
           {/* Text Content */}
-          <div className="space-y-12">
+          <div className="space-y-8 lg:space-y-10 relative z-20">
             {/* Top indicator */}
-            <div 
-              className={`transform transition-all duration-1000 ease-out ${
-                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
-            >
+            <div className="pt-8 lg:pt-12">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-px bg-gradient-to-r from-red-500 to-orange-500"></div>
+                <div
+                  className="w-16 h-px bg-gradient-to-r from-red-500 to-orange-500"
+                />
                 <span className="text-zinc-400 tracking-[0.25em] uppercase text-xs font-medium">
-                  Streetwear × Arte Urbana
+                  Made in Firenze
                 </span>
               </div>
             </div>
-            
-            {/* Main Title */}
-            <h1 
-              className={`transform transition-all duration-1000 delay-200 ease-out ${
-                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
+
+            {/* Main Title with subtle glitch */}
+            <h1
+              className="relative z-30"
               style={{
-                fontSize: 'clamp(3.5rem, 7vw, 7rem)',
-                lineHeight: '0.85',
+                fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+                lineHeight: '0.9',
                 fontWeight: '800'
               }}
             >
-              <span className="block bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent py-4 lg:py-8">
-                Swaggerz
+              <span
+                className="block bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent py-2 lg:py-4"
+              >
+                SWAGGERZ
               </span>
-              <span className="block text-white mt-2 font-light tracking-tight">
-                Collective
+              <span className="block text-white mt-1 lg:mt-2 font-light tracking-tight">
+                Streetwear Culture
               </span>
             </h1>
-            
+
             {/* Description */}
-            <div 
-              className={`space-y-8 transform transition-all duration-1000 delay-400 ease-out ${
-                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
-            >
-              <p className="text-xl text-zinc-300 max-w-lg leading-relaxed font-light">
-                Abbigliamento che unisce cultura della strada e arte contemporanea. 
-                <span className="text-white font-medium"> Espressione autentica</span> per chi vive la città.
+            <div className="space-y-4 lg:space-y-6 relative z-30">
+              <p
+                className="text-lg text-zinc-300 max-w-lg leading-relaxed"
+              >
+                Dove <span className="text-orange-400 font-medium">streetwear</span> incontra <span className="text-red-400 font-medium">arte digitale</span>.
+                <span className="block text-white font-medium mt-2">
+                  Ogni pezzo racconta una storia urbana.
+                </span>
               </p>
-              
-              {/* Stats inline */}
-              <div className="flex items-center gap-12 text-sm text-zinc-400">
-                <div className="flex flex-col group cursor-default">
-                  <span className="text-white text-2xl font-bold tracking-tight group-hover:text-orange-400 transition-colors duration-300">500+</span>
-                  <span className="text-xs uppercase tracking-wider">Designs</span>
+
+              {/* Cleaner stats */}
+              <div
+                className="flex items-center gap-6 text-sm text-zinc-400"
+              >
+                <div
+                  className="text-center group cursor-default"
+                >
+                  <span className="block text-white text-xl font-bold">
+                    500+
+                  </span>
+                  <span className="text-xs uppercase tracking-wider opacity-70">
+                    Drops
+                  </span>
                 </div>
-                <div className="w-px h-12 bg-zinc-700"></div>
-                <div className="flex flex-col group cursor-default">
-                  <span className="text-white text-lg font-semibold group-hover:text-orange-400 transition-colors duration-300">Est. 2020</span>
-                  <span className="text-xs uppercase tracking-wider">Milano</span>
+
+                <div className="w-px h-6 bg-zinc-700/50"></div>
+
+                <div
+                  className="text-center group cursor-default"
+                >
+                  <span className="block text-white text-lg font-semibold">
+                    2020
+                  </span>
+                  <span className="text-xs uppercase tracking-wider opacity-70">
+                    Firenze
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* CTA */}
-            <div 
-              className={`transform transition-all duration-1000 delay-600 ease-out ${
-                isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-              }`}
-            >
-              <button className="group relative overflow-hidden px-10 py-5 bg-white text-black font-semibold uppercase tracking-wide text-sm hover:bg-zinc-100 transition-all duration-300 transform hover:scale-105 cursor-pointer">
+            {/* Main CTA */}
+            <div className="relative z-30">
+              <button
+                className="group relative overflow-hidden px-10 py-5 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold tracking-wide text-lg cursor-pointer rounded-2xl shadow-xl shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-300"
+              >
+                <div
+                  className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"
+                />
                 <span className="relative flex items-center gap-3">
-                  Esplora la collezione
-                  <ArrowRight 
-                    size={18} 
-                    className="group-hover:translate-x-2 transition-transform duration-300" 
-                  />
+                  <Flame size={16} className="text-yellow-300" />
+                  Scopri i drop
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
                 </span>
               </button>
             </div>
           </div>
 
-          {/* Visual Content - Migliorato ma sobrio */}
-          <div className="relative w-full max-w-lg mx-auto max-sm:w-[80vw]">
-            {/* Frame minimalista */}
-            <div className="absolute -inset-6 opacity-20">
-              <div className="absolute top-0 left-0 w-16 h-16 border-l-2 border-t-2 border-orange-500"></div>
-              <div className="absolute bottom-0 right-0 w-16 h-16 border-r-2 border-b-2 border-red-500"></div>
-            </div>
-
-            <div className="relative aspect-[4/5] overflow-hidden group">
-              {/* Immagine principale */}
-              <Image
-                src="/rebkon-hero-image.jpeg"
-                alt="Swaggerz Collective - Urban Streetwear"
-                fill
-                className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-110"
-              />
-              
-              {/* Overlay sottile per contrasto */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
-              
-              {/* Typography sovrapposta - più pulita */}
-              <div className="absolute inset-0 flex flex-col justify-between p-8">
-                
-                {/* Badge in alto */}
-                <div className="flex justify-between items-start">
-                  <div className="bg-white/10 backdrop-blur-md px-4 py-2 border border-white/20">
-                    <span className="text-white text-xs font-bold tracking-wider uppercase">New Collection</span>
-                  </div>
-                </div>
-
-                {/* Testo centrale */}
-                <div className="text-center">
-                  <div className="transform group-hover:scale-105 transition-transform duration-500">
-                    <span className="block text-5xl font-black tracking-wider text-white mb-2 drop-shadow-2xl">
-                      STREET
-                    </span>
-                    <span className="block text-zinc-300 font-light tracking-[0.4em] text-sm uppercase">
-                      CULTURE
-                    </span>
-                  </div>
-                </div>
-
-                {/* Info in basso */}
-                <div className="flex justify-between items-end">
-                  <div className="text-left">
-                    <p className="text-white text-sm font-semibold">Urban Collection</p>
-                    <p className="text-zinc-300 text-xs">Limited Drop</p>
-                  </div>
-                  
-                  <div className="bg-gradient-to-r from-red-500 to-orange-500 px-4 py-2">
-                    <span className="text-white font-bold text-sm">€39-89</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bordi accent sottili */}
-              <div className="absolute top-0 left-0 w-1 h-24 bg-gradient-to-b from-red-500 to-transparent"></div>
-              <div className="absolute bottom-0 right-0 w-24 h-1 bg-gradient-to-l from-orange-500 to-transparent"></div>
-            </div>
-
-            {/* Ombra proiettata */}
-            <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-2/3 h-6 bg-red-500/10 blur-xl"></div>
+          {/* Enhanced Visual Content with Collection Showcase */}
+          <div className="relative z-10 flex justify-center lg:justify-end lg:pt-12 xl:pt-16">
+            <HeroDropCard
+              currentCollection={currentCollection}
+              collections={collections}
+              onCollectionChange={setCurrentCollection}
+            />
           </div>
         </div>
       </div>

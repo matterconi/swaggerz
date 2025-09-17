@@ -1,32 +1,6 @@
 import { useEffect, useState } from 'react';
 import { authClient } from '@/lib/auth-client'; // ✅ Solo client-side imports
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  image?: string | null;
-  authType?: string;
-}
-
-interface SessionData {
-  id: string;
-  userId: string;
-  expiresAt: Date;
-  token: string;
-  createdAt: Date;
-  updatedAt: Date;
-  ipAddress?: string;
-  userAgent?: string;
-}
-
-interface Session {
-  user: User;
-  session: SessionData;
-}
 
 export function useAuth() {
   const [data, setData] = useState<any>(null);
@@ -97,20 +71,49 @@ export function useAuth() {
     }
   };
 
+  // Clear error
+  const clearError = () => {
+    setError(null);
+  };
+
+  // Send magic link using Better Auth
+  const sendMagicLink = async (email: string) => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      const response = await authClient.signIn.magicLink({
+        email,
+        callbackURL: '/dashboard',
+      });
+
+      console.log('✅ Magic link sent via Better Auth:', response);
+      return response;
+    } catch (err) {
+      console.error('❌ Errore invio magic link:', err);
+      setError('Errore durante l\'invio del magic link');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     // Dati
     user: data?.user || null,
     session: data?.session || null,
     loading,
     error,
-        
+
     // Stato
     isAuthenticated: !!data?.user,
     isLoading: loading,
-        
+
     // Azioni
     signIn,
     signOut,
     refresh,
+    clearError,
+    sendMagicLink,
   };
 }

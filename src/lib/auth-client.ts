@@ -1,9 +1,11 @@
 import { createAuthClient } from 'better-auth/client';
+import { magicLinkClient } from 'better-auth/client/plugins';
 import { GuestUser } from '@/types/auth';
 
-// Client per l'uso nel frontend - SOLO LATO CLIENT
+// ✅ Client per l'uso nel frontend - SOLO LATO CLIENT
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000',
+  plugins: [magicLinkClient()],
 });
 
 // Funzioni helper per la gestione dell'autenticazione - SOLO LATO CLIENT
@@ -41,7 +43,7 @@ export const authUtils = {
   
   // Aggiorna l'ultima attività di una sessione
   async updateSessionActivity(): Promise<void> {
-    // Implementazione per aggiornare lastActivityAt se necessario
-    // Per ora lasciamo vuoto, Better Auth gestisce automaticamente le sessioni
+    // Better Auth gestisce automaticamente le sessioni
+    // Questa funzione può rimanere vuota o implementare logica personalizzata
   },
 };

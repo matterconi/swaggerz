@@ -10,7 +10,7 @@ export default async function Home() {
   const items = await db.select().from(products).orderBy(products.createdAt);
 
   return (
-    <div className="min-h-screen bg-[var(--color-light-100)] text-[var(--color-dark-900)]">
+    <div className="min-h-screen bg-[var(--color-light-100)] text-[var(--color-dark-900)] max-w-[100vw]">
       <Navbar />
         <HeroSection />
         <Slider items={items} />
