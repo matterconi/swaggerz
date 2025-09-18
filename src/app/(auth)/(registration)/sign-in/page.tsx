@@ -1,9 +1,11 @@
 // app/(auth)/signin/page.tsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Shield, Zap } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useSearchParams } from 'next/navigation';
 
 // Provider icons components
 const GoogleIcon = () => (
@@ -35,19 +37,36 @@ const DiscordIcon = () => (
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const { sendMagicLink, signIn, loading, error, clearError } = useAuth();
+  const searchParams = useSearchParams();
+
+  // Gestione errori dai magic link falliti
+  useEffect(() => {
+    const errorFromUrl = searchParams.get('error');
+    const errorType = searchParams.get('error_type');
+
+    if (errorFromUrl && errorType === 'magic_link_failed') {
+      setAuthError(errorFromUrl);
+    }
+  }, [searchParams]);
 
   const handleMagicLinkSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    setIsLoading(true);
+    setAuthError(null);
+    clearError();
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      console.log('Magic link sent to:', email);
-    }, 2000);
+    try {
+      await sendMagicLink(email, 'sign-in');
+      setMagicLinkSent(true);
+      console.log('✅ Magic link inviato!');
+    } catch (err) {
+      console.error('❌ Errore:', err);
+      setAuthError('Errore durante l\'invio del magic link');
+    }
   };
 
   const providers = [
@@ -56,6 +75,34 @@ export default function SignInPage() {
     { name: 'Apple', icon: <AppleIcon />, onClick: () => console.log('Apple sign in') },
     { name: 'Discord', icon: <DiscordIcon />, onClick: () => console.log('Discord sign in') }
   ];
+
+  // Se il magic link è stato inviato, mostra il messaggio di successo
+  if (magicLinkSent) {
+    return (
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center space-y-6">
+          <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
+            <span className="text-2xl">📧</span>
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-white">Email inviata!</h2>
+            <p className="text-zinc-400">
+              Controlla la tua casella di posta e clicca sul link per accedere al tuo account.
+            </p>
+            <p className="text-xs text-zinc-500">
+              Ricordati di controllare anche nella cartella spam
+            </p>
+          </div>
+          <button
+            onClick={() => setMagicLinkSent(false)}
+            className="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors"
+          >
+            ← Torna indietro
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-md space-y-8">
@@ -68,6 +115,18 @@ export default function SignInPage() {
         </h2>
         <p className="text-zinc-400 text-sm">Nel modo più veloce</p>
       </div>
+
+      {/* Error Display */}
+      {(authError || error) && (
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+          <div className="flex items-center gap-3">
+            <span className="text-red-400 text-lg">⚠️</span>
+            <p className="text-red-400 text-sm font-medium">
+              {authError || error}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Magic Link Form */}
       <form onSubmit={handleMagicLinkSubmit} className="space-y-4">
@@ -83,17 +142,17 @@ export default function SignInPage() {
             className="w-full px-4 py-4 bg-zinc-800/50 border border-zinc-700/50 rounded-xl text-white placeholder-zinc-400 focus:border-orange-500/50 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all duration-300"
             placeholder="la-tua-email@esempio.com"
             required
-            disabled={isLoading}
+            disabled={loading}
           />
         </div>
 
         <button
           type="submit"
-          disabled={isLoading || !email}
+          disabled={loading || !email}
           className="w-full group relative overflow-hidden px-6 py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           <span className="relative flex items-center justify-center gap-2">
-            {isLoading ? (
+            {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 Invio in corso...

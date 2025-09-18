@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { CheckCircle, Star, Mail, AlertTriangle, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Turnstile } from '@marsidev/react-turnstile';
+import TurnstileBox from '@/components/TurnstileBox';
 
 // Google Icon component
 const GoogleIcon = () => (
@@ -22,10 +23,13 @@ export default function SignUpPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [email, setEmail] = useState('');
   const [isLoadingMagicLink, setIsLoadingMagicLink] = useState(false);
+  const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [turnstileRef, setTurnstileRef] = useState<any>(null);
   const [magicLinkError, setMagicLinkError] = useState<string | null>(null);
-  const { signIn, sendMagicLink, loading, error, clearError } = useAuth();
+  const { signIn, sendMagicLink, error, clearError } = useAuth();
 
   // ✅ Gestione errori dai magic link falliti
   useEffect(() => {
@@ -54,11 +58,14 @@ export default function SignUpPage() {
       return;
     }
 
+    setIsLoadingGoogle(true);
     try {
       await signIn('google');
     } catch (err) {
       console.error('Errore Google signup:', err);
       setTurnstileToken('');
+    } finally {
+      setIsLoadingGoogle(false);
     }
   };
 
@@ -78,7 +85,7 @@ export default function SignUpPage() {
     clearError();
 
     try {
-      await sendMagicLink(email);
+      await sendMagicLink(email, 'sign-up');
       setMagicLinkSent(true);
       console.log('✅ Magic link inviato!');
     } catch (err) {
@@ -91,6 +98,13 @@ export default function SignUpPage() {
 
   const dismissMagicLinkError = () => {
     setMagicLinkError(null);
+  };
+
+  const handleTurnstileClick = () => {
+    if (!isVerifying && !turnstileToken && turnstileRef?.execute) {
+      setIsVerifying(true);
+      turnstileRef.execute();
+    }
   };
 
   return (
@@ -220,16 +234,16 @@ export default function SignUpPage() {
         <div className="space-y-4">
           <button
             onClick={handleGoogleSignUp}
-            disabled={!acceptedTerms || !turnstileToken || loading}
+            disabled={!acceptedTerms || !turnstileToken || isLoadingGoogle}
             className="w-full group flex items-center justify-center gap-3 px-6 py-4 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl transition-all duration-300 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white"
           >
-            {loading ? (
+            {isLoadingGoogle ? (
               <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
             ) : (
               <GoogleIcon />
             )}
             <span className="text-gray-800 font-medium">
-              {loading ? 'Accesso in corso...' : 'Continua con Google'}
+              {isLoadingGoogle ? 'Accesso in corso...' : 'Continua con Google'}
             </span>
           </button>
         </div>
@@ -267,17 +281,40 @@ export default function SignUpPage() {
           </span>
         </label>
 
-        {/* Turnstile widget - posizionato discretamente */}
+        {/* Turnstile - widget nascosto + UI personalizzata */}
         <div className="flex justify-center py-2">
-          <Turnstile
-            siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-            onSuccess={(token) => setTurnstileToken(token)}
-            onError={() => setTurnstileToken('')}
-            onExpire={() => setTurnstileToken('')}
-            options={{
-              theme: 'dark',
-              appearance: 'always'
-            }}
+          {/* Turnstile ufficiale nascosto */}
+          <div className="hidden">
+            <Turnstile
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+              onSuccess={(token) => {
+                setTurnstileToken(token);
+                setIsVerifying(false);
+              }}
+              onError={() => {
+                setTurnstileToken('');
+                setIsVerifying(false);
+              }}
+              onExpire={() => {
+                setTurnstileToken('');
+                setIsVerifying(false);
+              }}
+              onLoad={() => {
+                setIsVerifying(false); // Widget pronto, ma non ancora avviato
+              }}
+              ref={setTurnstileRef}
+              options={{
+                theme: 'dark',
+                appearance: 'execute'
+              }}
+            />
+          </div>
+
+          {/* UI personalizzata che riflette lo stato */}
+          <TurnstileBox
+            isVerified={!!turnstileToken}
+            isLoading={isVerifying}
+            onClick={handleTurnstileClick}
           />
         </div>
 
