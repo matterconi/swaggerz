@@ -1,20 +1,39 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Flame } from 'lucide-react';
 import { collections } from '@/constants/heroCollections';
 import HeroDropCard from './HeroDropCard';
 
 const RebkonHero = () => {
   const [currentCollection, setCurrentCollection] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Auto-rotate collections - more slow for better user experience
-  useEffect(() => {
-    const interval = setInterval(() => {
+  // Funzione per resettare e riavviare il timer
+  const resetTimer = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    intervalRef.current = setInterval(() => {
       setCurrentCollection((prev) => (prev + 1) % collections.length);
-    }, 6000); // Increased from 4s to 6s
-    return () => clearInterval(interval);
-  }, [collections.length]);
+    }, 6000);
+  };
+
+  // Auto-rotate collections
+  useEffect(() => {
+    resetTimer();
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  // Handler per il cambio di collezione che resetta il timer
+  const handleCollectionChange = (index: number) => {
+    setCurrentCollection(index);
+    resetTimer(); // Reset del timer quando si clicca manualmente
+  };
 
   return (
     <section
@@ -130,7 +149,7 @@ const RebkonHero = () => {
             <HeroDropCard
               currentCollection={currentCollection}
               collections={collections}
-              onCollectionChange={setCurrentCollection}
+              onCollectionChange={handleCollectionChange}
             />
           </div>
         </div>

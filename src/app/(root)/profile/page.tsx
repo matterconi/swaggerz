@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Mail, Calendar, Shield, LogOut, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { SwagLoader } from '@/components/SwagLoader';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -18,11 +19,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="w-12 h-12 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <SwagLoader message="Caricamento profilo..." />;
   }
 
   if (!user) {

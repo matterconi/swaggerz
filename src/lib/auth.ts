@@ -29,9 +29,13 @@ export const auth = betterAuth({
         const { email, url, token } = data;
         console.log('📧 Better Auth Magic Link Request:', { email, url, token });
 
+        // Estrarre il tipo di auth dall'URL se presente
+        const urlObj = new URL(url);
+        const authType = urlObj.searchParams.get('type') || 'sign-up';
+
         try {
-          // ✅ DECOMMENTATO - Ora invia davvero l'email
-          await sendMagicLinkEmailWithUrl(email, url);
+          // ✅ DECOMMENTATO - Ora invia davvero l'email con il tipo
+          await sendMagicLinkEmailWithUrl(email, url, authType);
           console.log('✅ Magic link email sent successfully');
           return true;
         } catch (error) {

@@ -21,6 +21,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="it">
+      <head>
+        {/* Preload Cloudflare Turnstile script */}
+        <link
+          rel="preload"
+          href="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          as="script"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className={`${jost.variable} antialiased`}>
         {children}
       </body>

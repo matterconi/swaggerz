@@ -6,6 +6,7 @@ import { Check } from 'lucide-react';
 interface TurnstileBoxProps {
   isVerified: boolean;
   isLoading?: boolean;
+  onClick?: () => void;
   className?: string;
 }
 
@@ -27,20 +28,24 @@ const CloudflareIcon = () => (
 export default function TurnstileBox({
   isVerified,
   isLoading = false,
+  onClick,
   className = ""
 }: TurnstileBoxProps) {
   return (
-    <div className={`
-      bg-zinc-800/50 border border-zinc-600 rounded-xl p-4 transition-all duration-300 ease-in-out
-      ${isVerified ? 'bg-green-900/20 border-green-500/50' : ''}
-      hover:border-zinc-500
-      ${className}
-    `}>
+    <div
+      className={`
+        w-[300px] bg-zinc-800/50 border border-zinc-600 rounded-xl p-4 transition-all duration-300 ease-in-out
+        ${isVerified ? 'bg-green-900/20 border-green-500/50' : ''}
+        ${!isVerified && !isLoading ? 'hover:border-zinc-500 cursor-pointer' : ''}
+        ${className}
+      `}
+      onClick={!isVerified && !isLoading ? onClick : undefined}
+    >
 
       <div className="flex items-center justify-between gap-4">
         {/* Left side - Checkbox area */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="relative flex-shrink-0">
             {isLoading ? (
               <div className="w-6 h-6 border-2 border-zinc-500 border-t-orange-500 rounded-sm animate-spin bg-zinc-700"></div>
             ) : isVerified ? (
@@ -52,23 +57,41 @@ export default function TurnstileBox({
             )}
           </div>
 
-          <div className="text-sm">
+          <div className="text-sm font-medium text-zinc-300 flex-1">
             {isLoading ? (
-              <span className="font-medium text-zinc-300">Verifica sicurezza in corso...</span>
+              <span>Verifica sicurezza in corso...</span>
             ) : isVerified ? (
-              <span className="font-medium text-zinc-300">Verifica completata</span>
+              <span>Verifica completata</span>
             ) : (
-              <span className="text-zinc-300">I&apos;m not a robot</span>
+              <span>I&apos;m not a robot</span>
             )}
           </div>
         </div>
 
         {/* Right side - Cloudflare branding */}
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
           <CloudflareIcon />
           <div className="text-xs text-zinc-400 leading-tight text-center">
-            <div className="font-medium">Cloudflare</div>
-            <div className="text-[10px] opacity-70">Privacy - Terms</div>
+            <div className="font-medium text-[11px]">Cloudflare</div>
+            <div className="text-[9px] opacity-70 flex gap-1 justify-center">
+              <a
+                href="https://www.cloudflare.com/privacypolicy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-300 transition-colors"
+              >
+                Privacy
+              </a>
+              <span>-</span>
+              <a
+                href="https://www.cloudflare.com/website-terms/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-300 transition-colors"
+              >
+                Terms
+              </a>
+            </div>
           </div>
         </div>
 

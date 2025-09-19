@@ -75,24 +75,24 @@ export function useAuth() {
     setError(null);
   };
 
-  // ✅ Send magic link migliorato con nuovo callbackURL
-  const sendMagicLink = async (email: string) => {
+  // ✅ Send magic link migliorato con nuovo callbackURL e tipo di auth
+  const sendMagicLink = async (email: string, authType: 'sign-in' | 'sign-up' = 'sign-up') => {
     try {
       setError(null);
-      setLoading(true);
+      // Non impostare loading qui, causa problemi con il layout
 
-      console.log('🔄 Invio magic link per:', email);
+      console.log('🔄 Invio magic link per:', email, 'tipo:', authType);
 
       const response = await authClient.signIn.magicLink({
         email,
-        callbackURL: '/verify-callback', // ✅ Nuova pagina intermedia
+        callbackURL: `/verify-callback?type=${authType}`, // ✅ Aggiungiamo il tipo
       });
 
       console.log('✅ Magic link sent via Better Auth:', response);
       return response;
     } catch (err: any) {
       console.error('❌ Errore invio magic link:', err);
-      
+
       // ✅ Gestione errori più dettagliata
       if (err?.error?.code === 'INVALID_EMAIL') {
         setError('Email non valida');
@@ -102,10 +102,8 @@ export function useAuth() {
       } else {
         setError('Errore durante l\'invio del magic link');
       }
-      
+
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
