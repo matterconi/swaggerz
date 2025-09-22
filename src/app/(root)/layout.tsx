@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${jost.variable} antialiased min-h-screen`}>
+    <div className={`${jost.variable} antialiased min-h-screen bg-dark-900 text-white`}>
       {children}
     </div>
   );

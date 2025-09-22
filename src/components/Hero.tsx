@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Flame } from 'lucide-react';
 import { collections } from '@/constants/heroCollections';
-import HeroDropCard from './HeroDropCard';
+import HeroDropCard from './HeroDropImage/HeroDropCard';
+import ShaderText from '@/components/ShaderText';
 
 const RebkonHero = () => {
   const [currentCollection, setCurrentCollection] = useState(0);
@@ -37,7 +38,7 @@ const RebkonHero = () => {
 
   return (
     <section
-      className="relative min-h-screen bg-zinc-950 font-jost max-lg:py-10"
+      className="relative bg-zinc-950 font-jost pt-20 overflow-hidden"
     >
       {/* Refined background */}
       <div
@@ -48,15 +49,14 @@ const RebkonHero = () => {
       />
 
       {/* Main Content */}
-      <div className="relative z-10 container mx-auto px-6 py-16 lg:py-20 flex items-center min-h-screen">
+      <div className="relative z-10 container mx-auto px-6 lg:px-16 max-lg:py-16">
         <div
-          className="grid lg:grid-cols-2 gap-12 xl:gap-20 2xl:gap-24 items-center justify-center w-full"
+          className="grid lg:grid-cols-12 gap-4 lg:gap-12 xl:gap-16 items-center w-full"
         >
 
-          {/* Text Content */}
-          <div className="space-y-8 lg:space-y-10 relative z-20">
+          {/* Text Content (senza CTA) */}
+          <div className="lg:col-span-7 space-y-8 lg:space-y-10 relative z-20 order-1 lg:py-24">
             {/* Top indicator */}
-            <div className="pt-8 lg:pt-12">
               <div className="flex items-center gap-4">
                 <div
                   className="w-16 h-px bg-gradient-to-r from-red-500 to-orange-500"
@@ -64,27 +64,31 @@ const RebkonHero = () => {
                 <span className="text-zinc-400 tracking-[0.25em] uppercase text-xs font-medium">
                   Made in Firenze
                 </span>
-              </div>
             </div>
 
             {/* Main Title with subtle glitch */}
-            <h1
-              className="relative z-30"
-              style={{
-                fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
-                lineHeight: '0.9',
-                fontWeight: '800'
-              }}
-            >
-              <span
-                className="block bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 bg-clip-text text-transparent py-2 lg:py-4"
+            <div>
+              <ShaderText 
+                className="block"
+                fontSize="clamp(2.5rem, 6vw, 5.5rem)"
+                fontWeight="800"
               >
                 SWAGGERZ
-              </span>
-              <span className="block text-white mt-1 lg:mt-2 font-light tracking-tight">
-                Streetwear Culture
-              </span>
-            </h1>
+              </ShaderText>
+              <h1
+                className="relative z-30"
+                style={{
+                  fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+                  lineHeight: '0.9',
+                  fontWeight: '800'
+                }}
+              >
+                
+                <span className="block text-white mt-1 lg:mt-2 font-light tracking-tight">
+                  Streetwear Culture
+                </span>
+              </h1>
+            </div>
 
             {/* Description */}
             <div className="space-y-4 lg:space-y-6 relative z-30">
@@ -127,30 +131,46 @@ const RebkonHero = () => {
               </div>
             </div>
 
-            {/* Main CTA */}
-            <div className="relative z-30">
+            {/* Main CTA - visibile solo su desktop */}
+            <div className="relative z-30 hidden lg:block">
               <button
                 className="group relative overflow-hidden px-10 py-5 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold tracking-wide text-lg cursor-pointer rounded-2xl shadow-xl shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-300"
               >
                 <div
                   className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"
                 />
-                <span className="relative flex items-center gap-3">
-                  <Flame size={16} className="text-yellow-300" />
-                  Scopri i drop
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
+                <span className="relative flex items-center gap-3 text-md lg:text-lg">
+                  <Flame className="w-[1.4em] h-[1.4em] lg:w-[1.2em] lg:h-[1.2em] text-yellow-300" />
+                  Esplora le collezioni
+                  <ArrowRight className="w-[1.4em] h-[1.4em] lg:w-[1.2em] lg:h-[1.2em] group-hover:translate-x-1 transition-transform duration-200" />
                 </span>
               </button>
             </div>
           </div>
 
           {/* Enhanced Visual Content with Collection Showcase */}
-          <div className="relative z-10 flex justify-center lg:justify-end lg:pt-12 xl:pt-16">
+          <div className="lg:col-span-5 relative z-10 flex items-center justify-center order-2">
             <HeroDropCard
               currentCollection={currentCollection}
               collections={collections}
               onCollectionChange={handleCollectionChange}
             />
+          </div>
+
+          {/* Main CTA - visibile solo su mobile e posizionata dopo l'immagine */}
+          <div className="relative z-30 lg:hidden order-3 flex justify-center mt-12">
+            <button
+              className="group relative overflow-hidden px-10 py-5 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold tracking-wide text-lg cursor-pointer rounded-2xl shadow-xl shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-300"
+            >
+              <div
+                className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"
+              />
+              <span className="relative flex items-center gap-3 text-md lg:text-lg">
+                <Flame className="w-[1.4em] h-[1.4em] lg:w-[1.2em] lg:h-[1.2em] text-yellow-300" />
+                Esplora le collezioni
+                <ArrowRight className="w-[1.4em] h-[1.4em] lg:w-[1.2em] lg:h-[1.2em] group-hover:translate-x-1 transition-transform duration-200" />
+              </span>
+            </button>
           </div>
         </div>
       </div>
