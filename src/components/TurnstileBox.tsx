@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { Check } from 'lucide-react';
+import React from "react";
+import { Check } from "lucide-react";
 
 interface TurnstileBoxProps {
   isVerified: boolean;
@@ -13,7 +13,13 @@ interface TurnstileBoxProps {
 const CloudflareIcon = () => (
   <svg width="20" height="20" viewBox="0 0 100 100" className="flex-shrink-0">
     <defs>
-      <linearGradient id="cloudflare-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient
+        id="cloudflare-gradient"
+        x1="0%"
+        y1="0%"
+        x2="100%"
+        y2="100%"
+      >
         <stop offset="0%" stopColor="#f38020" />
         <stop offset="100%" stopColor="#fbad41" />
       </linearGradient>
@@ -29,19 +35,22 @@ export default function TurnstileBox({
   isVerified,
   isLoading = false,
   onClick,
-  className = ""
+  className = "",
 }: TurnstileBoxProps) {
   return (
     <div
       className={`
         w-[300px] bg-zinc-800/50 border border-zinc-600 rounded-xl p-4 transition-all duration-300 ease-in-out
-        ${isVerified ? 'bg-green-900/20 border-green-500/50' : ''}
-        ${!isVerified && !isLoading ? 'hover:border-zinc-500 cursor-pointer' : ''}
+        ${isVerified ? "bg-green-900/20 border-green-500/50" : ""}
+        ${
+          !isVerified && !isLoading
+            ? "hover:border-zinc-500 cursor-pointer"
+            : ""
+        }
         ${className}
       `}
       onClick={!isVerified && !isLoading ? onClick : undefined}
     >
-
       <div className="flex items-center justify-between gap-4">
         {/* Left side - Checkbox area */}
         <div className="flex items-center gap-3 flex-1">
@@ -94,7 +103,6 @@ export default function TurnstileBox({
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

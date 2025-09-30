@@ -17,10 +17,10 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000', // ✅ Cambiato da 3001 a 3000
 
   trustedOrigins: [
-    'http://localhost:3000', // ✅ Cambiato da 3001 a 3000
+    'http://localhost:3000',
     'http://localhost:3001',
-    'https://refactored-train-rvrgvpg74v52r5x-3000.app.github.dev'
-  ],
+    process.env.BETTER_AUTH_URL || 'http://localhost:3000'
+  ].filter(Boolean),
 
   plugins: [
     nextCookies(),

@@ -26,17 +26,10 @@
     "EMAIL_USER": "${localEnv:EMAIL_USER}",
     "EMAIL_PASS": "${localEnv:EMAIL_PASS}",
     
-    // Email Provider - ⚠️ PLACEHOLDER - Il valore reale va nei GitHub Secrets
-    "RESEND_API_KEY": "${localEnv:RESEND_API_KEY}",
-    
     // Google OAuth - ⚠️ PLACEHOLDER - I valori reali vanno nei GitHub Secrets
     "GOOGLE_CLIENT_ID": "${localEnv:GOOGLE_CLIENT_ID}",
     "GOOGLE_CLIENT_SECRET": "${localEnv:GOOGLE_CLIENT_SECRET}",
     
-    // Passkey Configuration - Dinamici per Codespaces
-    "PASSKEY_RP_ID": "${localEnv:CODESPACE_NAME}-3000.${localEnv:GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
-    "PASSKEY_ORIGIN": "https://${localEnv:CODESPACE_NAME}-3000.${localEnv:GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}",
-
     // Cloudflare Turnstile Configuration
     "NEXT_PUBLIC_TURNSTILE_SITE_KEY": "${localEnv:NEXT_PUBLIC_TURNSTILE_SITE_KEY}",
     "TURNSTILE_SECRET_KEY": "${localEnv:TURNSTILE_SECRET_KEY}",

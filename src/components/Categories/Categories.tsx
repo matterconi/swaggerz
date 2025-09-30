@@ -1,7 +1,7 @@
 // components/Categories/index.tsx
 "use client"
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useScrollVideo } from '@/hooks/useScrollVideo';
 import VideoPlayer from './VideoPlayer';
 import { FixedTextSection, scrollConfig } from './TextSection';
@@ -12,15 +12,35 @@ const Categories: React.FC = () => {
   const { containerRef, currentVideo } = useScrollVideo(videoData.length);
   const [scrollDuration, setScrollDuration] = useState(400);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+  const [isVideoPositioned, setIsVideoPositioned] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Callback per quando il video è pronto
+  const handleVideoReady = useCallback(() => {
+    setIsVideoPositioned(true);
+  }, []);
+
+  // Reset del flag quando cambia video
+  useEffect(() => {
+    setIsVideoPositioned(false);
+    // Piccolo delay per permettere al video di caricarsi
+    const timer = setTimeout(() => {
+      setIsVideoPositioned(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [currentVideo]);
   
   // Detect device type and window size
   useEffect(() => {
     const checkDevice = () => {
       const width = window.innerWidth;
       const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || width < 768;
+      const tablet = width >= 768 && width < 1024;
       
       setIsMobile(mobile);
+      setIsTablet(tablet);
       
       // Set scroll duration based on device
       if (width < 768) {
@@ -50,7 +70,7 @@ const Categories: React.FC = () => {
       if (isMobile) {
         container.style.scrollSnapType = 'y proximity';
         container.style.scrollSnapStop = 'always';
-        container.style.webkitOverflowScrolling = 'touch'; // iOS smooth scrolling
+        (container.style as any).webkitOverflowScrolling = 'touch'; // iOS smooth scrolling
       } else {
         container.style.scrollSnapType = 'y mandatory';
         container.style.scrollSnapStop = 'always';
@@ -88,41 +108,122 @@ const Categories: React.FC = () => {
     };
   }, [containerRef, isMobile, scrollDuration]);
 
+  // Render del layout basato sul dispositivo
+  const renderLayout = () => {
+    if (isMobile) {
+      // Layout mobile - dinamico con flexbox column
+      return (
+        <div className='flex flex-col h-full justify-end'>
+          {/* Video Player Section - flex-1 per prendere lo spazio disponibile */}
+          <div className="flex-1 w-full">
+            <VideoPlayer
+              videoData={videoData}
+              currentVideo={currentVideo}
+              onVideoReady={handleVideoReady}
+            />
+          </div>
+          
+          {/* Text Content Section - flex-shrink-0 per mantenere la sua altezza naturale */}
+          <div className={`flex-shrink-0 justify-self-end w-full overflow-hidden transition-opacity duration-200 ${
+            isVideoPositioned ? 'opacity-100' : 'opacity-0'
+          }`}>
+            <ProgressIndicator
+              totalItems={videoData.length}
+              currentIndex={currentVideo}
+            />
+            
+            {videoData.map((item, index) => (
+              <FixedTextSection
+                key={item.id}
+                item={item}
+                index={index}
+                isActive={index === currentVideo}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    } else if (isTablet) {
+      // Layout tablet - proporzione controllata 60/40
+      return (
+        <div className="flex flex-col h-full">
+          {/* Video Player Section - 60% dell'altezza */}
+          <div className="h-3/5 w-full">
+            <VideoPlayer
+              videoData={videoData}
+              currentVideo={currentVideo}
+              onVideoReady={handleVideoReady}
+            />
+          </div>
+          
+          {/* Text Content Section - 40% dell'altezza */}
+          <div className={`h-2/5 w-full relative overflow-hidden transition-opacity duration-200 ${
+            isVideoPositioned ? 'opacity-100' : 'opacity-0'
+          }`}>
+            <ProgressIndicator
+              totalItems={videoData.length}
+              currentIndex={currentVideo}
+            />
+            
+            {videoData.map((item, index) => (
+              <FixedTextSection
+                key={item.id}
+                item={item}
+                index={index}
+                isActive={index === currentVideo}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    } else {
+      // Layout desktop - side by side 50/50
+      return (
+        <>
+          <div className="w-full xl:w-1/2 flex-1 xl:h-full min-h-0">
+            <VideoPlayer
+              videoData={videoData}
+              currentVideo={currentVideo}
+              onVideoReady={handleVideoReady}
+            />
+          </div>
+          
+          <div className={`w-full xl:w-1/2 flex-shrink-0 xl:h-full relative overflow-hidden transition-opacity duration-200 ${
+            isVideoPositioned ? 'opacity-100' : 'opacity-0'
+          }`}>
+            <ProgressIndicator
+              totalItems={videoData.length}
+              currentIndex={currentVideo}
+            />
+            
+            {videoData.map((item, index) => (
+              <FixedTextSection
+                key={item.id}
+                item={item}
+                index={index}
+                isActive={index === currentVideo}
+              />
+            ))}
+          </div>
+        </>
+      );
+    }
+  };
+
   return (
     <div 
       ref={containerRef}
-      className="relative"
+      className="relative bg-dark-900"
       style={{ 
         height: `${videoData.length * 100}vh`,
       }}
     >
       <div 
-        ref={scrollContainerRef}
-        className="sticky top-20 flex flex-col lg:flex-row"
+        ref={scrollContainerRef} 
+        className={`sticky top-20 ${!isMobile && !isTablet ? 'flex xl:flex-row' : ''}`}
         style={{ height: 'calc(100vh - 80px)' }}
       >
-        {/* Video Player Section */}
-        <VideoPlayer 
-          videoData={videoData} 
-          currentVideo={currentVideo}
-        />
-        
-        {/* Text Content Section */}
-        <div className="w-full lg:w-1/2 bg-zinc-950 relative overflow-hidden">
-          <ProgressIndicator 
-            totalItems={videoData.length} 
-            currentIndex={currentVideo} 
-          />
-          
-          {videoData.map((item, index) => (
-            <FixedTextSection
-              key={item.id}
-              item={item}
-              index={index}
-              isActive={index === currentVideo}
-            />
-          ))}
-        </div>
+        {renderLayout()}
       </div>
       
       {/* Optional: Add smooth scroll CSS */}
@@ -156,73 +257,23 @@ const Categories: React.FC = () => {
           scrollbar-width: thin;
           scrollbar-color: #ef4444 rgba(0, 0, 0, 0.1);
         }
+        
+        /* Tablet specific optimizations */
+        @media (min-width: 768px) and (max-width: 1023px) {
+          /* Assicuriamoci che il text content sia scrollabile se necessario */
+          .text-content-tablet {
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          
+          .text-content-tablet::-webkit-scrollbar {
+            display: none;
+          }
+        }
       `}</style>
     </div>
   );
 };
 
 export default Categories;
-
-// Hook personalizzato migliorato per lo scroll (se vuoi sovrascrivere useScrollVideo)
-export const useEnhancedScrollVideo = (totalVideos: number) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [currentVideo, setCurrentVideo] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  
-  useEffect(() => {
-    if (!containerRef.current) return;
-    
-    const container = containerRef.current;
-    const navbarOffset = scrollConfig.navbarHeight;
-    
-    const handleScroll = () => {
-      const scrollTop = container.scrollTop;
-      const scrollHeight = container.scrollHeight - container.clientHeight;
-      const progress = scrollTop / scrollHeight;
-      
-      setScrollProgress(progress);
-      
-      // Calculate current video with navbar offset consideration
-      const adjustedScrollTop = scrollTop + navbarOffset;
-      const sectionHeight = window.innerHeight - navbarOffset;
-      const newIndex = Math.min(
-        Math.floor(adjustedScrollTop / sectionHeight),
-        totalVideos - 1
-      );
-      
-      setCurrentVideo(Math.max(0, newIndex));
-    };
-    
-    // Throttle scroll events for better performance
-    let ticking = false;
-    const throttledScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    
-    container.addEventListener('scroll', throttledScroll, { passive: true });
-    
-    return () => container.removeEventListener('scroll', throttledScroll);
-  }, [totalVideos]);
-  
-  return { 
-    containerRef, 
-    currentVideo, 
-    scrollProgress,
-    scrollToVideo: (index: number) => {
-      if (containerRef.current) {
-        const navbarOffset = scrollConfig.navbarHeight;
-        const sectionHeight = window.innerHeight - navbarOffset;
-        containerRef.current.scrollTo({
-          top: index * sectionHeight,
-          behavior: 'smooth'
-        });
-      }
-    }
-  };
-};

@@ -9,9 +9,9 @@ interface NavLink { label: string; href: string; }
 interface NavbarProps { links?: NavLink[]; cartCount?: number; }
 
 const defaultLinks: NavLink[] = [
-  { label: "Men", href: "/#" },
-  { label: "Women", href: "/#" },
+  { label: "Gallery", href: "/gallery" },
   { label: "Collections", href: "/#" },
+  { label: "Create", href: "/#" },
   { label: "Contact", href: "/#" },
 ];
 

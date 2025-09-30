@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRandomDirections } from "@/hooks/useRandomDirections"
-import DropHeader from './HeroDropImageHeader';
 import CrosshairOverlay from './CrosshairOverlay';
 import NavigationDots from './NavigationDots';
 import CollectionInfoOverlay from './CollectionInfoOverlay';
@@ -72,11 +71,9 @@ const HeroDropCard: React.FC<HeroDropCardProps> = ({
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-md">
-      <DropHeader />
-
+    <div className="relative w-full h-full flex flex-col items-center justify-center px-2 py-2">
       <motion.div
-        className="relative aspect-[4/5] group w-full"
+        className="relative w-full max-w-[90%] h-full group"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
