@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import * as THREE from 'three';
+import { vertexShader, darkFragmentShader } from '@/constants/shaders';
 
 interface CircularButtonProps {
   text?: string;
@@ -38,6 +40,14 @@ const CircularButton: React.FC<CircularButtonProps> = ({
 
   const [arrowRotation, setArrowRotation] = React.useState(-45);
   const [delayTimeout, setDelayTimeout] = React.useState<NodeJS.Timeout | null>(null);
+
+  // Shader background refs
+  const shaderCanvasRef = useRef<HTMLCanvasElement>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const materialRef = useRef<THREE.ShaderMaterial | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const [shaderDataUrl, setShaderDataUrl] = useState<string>('');
 
   // Motion values per l'effetto magnetico
   const magneticX = useMotionValue(0);
@@ -100,6 +110,81 @@ const CircularButton: React.FC<CircularButtonProps> = ({
     };
   }, [delayTimeout]);
 
+  // Setup Three.js shader
+  useEffect(() => {
+    const canvas = shaderCanvasRef.current;
+    if (!canvas) return;
+
+    // Cleanup precedente
+    if (rendererRef.current) {
+      rendererRef.current.dispose();
+    }
+
+    // Setup Three.js
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      preserveDrawingBuffer: true,
+      antialias: true
+    });
+
+    renderer.setSize(size, size);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader: darkFragmentShader,
+      uniforms: {
+        uTime: { value: 0.0 }
+      },
+      transparent: true
+    });
+
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // Salva i riferimenti
+    rendererRef.current = renderer;
+    sceneRef.current = scene;
+    materialRef.current = material;
+
+    const animate = (time: number): void => {
+      if (!materialRef.current || !rendererRef.current || !sceneRef.current) return;
+
+      materialRef.current.uniforms.uTime.value = time * 0.001;
+      rendererRef.current.render(sceneRef.current, camera);
+
+      // Converti il canvas in data URL
+      if (canvas) {
+        setShaderDataUrl(canvas.toDataURL());
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      if (renderer) {
+        renderer.dispose();
+      }
+      if (geometry) {
+        geometry.dispose();
+      }
+      if (material) {
+        material.dispose();
+      }
+    };
+  }, [size]);
+
   const magneticAreaSize = size + 80; // Area magnetica più grande del bottone
 
   return (
@@ -112,11 +197,44 @@ const CircularButton: React.FC<CircularButtonProps> = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Canvas nascosto per generare lo shader */}
+      <canvas
+        ref={shaderCanvasRef}
+        style={{
+          display: 'none',
+          position: 'absolute'
+        }}
+        width={size}
+        height={size}
+      />
+
+      {/* Anello di glow esterno per transizione morbida */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: size + 40,
+          height: size + 40,
+          left: (magneticAreaSize - size - 40) / 2,
+          top: (magneticAreaSize - size - 40) / 2,
+          x: magneticSpringX,
+          y: magneticSpringY,
+          background: `radial-gradient(circle,
+            rgba(249, 115, 22, 0.3) 0%,
+            rgba(239, 68, 68, 0.2) 40%,
+            rgba(234, 179, 8, 0.1) 60%,
+            transparent 80%
+          )`,
+          filter: 'blur(12px)',
+          opacity: isHovered ? 0.8 : 0.5
+        }}
+        transition={{ opacity: { duration: 0.3 } }}
+      />
+
       <motion.button
         ref={buttonRef}
         onClick={onClick}
         onMouseEnter={() => setIsHovered?.(true)}
-        className="absolute group/btn focus:outline-none rounded-full bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 p-0"
+        className="absolute group/btn focus:outline-none rounded-full p-0 overflow-hidden cursor-pointer"
         style={{
           width: size,
           height: size,
@@ -124,8 +242,25 @@ const CircularButton: React.FC<CircularButtonProps> = ({
           top: (magneticAreaSize - size) / 2,
           x: magneticSpringX,
           y: magneticSpringY,
+          background: shaderDataUrl
+            ? `url(${shaderDataUrl})`
+            : 'linear-gradient(to bottom right, rgb(239, 68, 68), rgb(249, 115, 22), rgb(234, 179, 8))',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          boxShadow: `
+            0 0 20px rgba(249, 115, 22, 0.4),
+            0 0 40px rgba(239, 68, 68, 0.3),
+            0 8px 32px rgba(0, 0, 0, 0.3)
+          `
         }}
-        whileHover={{ scale: 1.05 }}
+        whileHover={{
+          scale: 1.05,
+          boxShadow: `
+            0 0 30px rgba(249, 115, 22, 0.6),
+            0 0 60px rgba(239, 68, 68, 0.4),
+            0 12px 48px rgba(0, 0, 0, 0.4)
+          `
+        }}
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
@@ -191,7 +326,7 @@ const CircularButton: React.FC<CircularButtonProps> = ({
             damping: 15
           }}
         >
-          <ArrowRight className="w-6 h-6 text-white drop-shadow-lg" />
+          <ArrowRight className="size-12 text-white font-bold" />
         </motion.div>
       </div>
     </motion.button>

@@ -4,7 +4,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRandomDirections } from "@/hooks/useRandomDirections"
-import CrosshairOverlay from './CrosshairOverlay';
 import NavigationDots from './NavigationDots';
 import CollectionInfoOverlay from './CollectionInfoOverlay';
 import DynamicGlowEffect from './DynamicGlowEffect';
@@ -71,18 +70,15 @@ const HeroDropCard: React.FC<HeroDropCardProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center px-2 py-2">
+    <div className="relative w-full h-full flex flex-col items-center justify-center">
       <motion.div
-        className="relative w-full max-w-[90%] h-full group"
+        className="relative w-full h-full group"
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        {/* Crosshair Component */}
-        <CrosshairOverlay />
-
         {/* Contenitore immagine con animazioni avanzate - Ora cliccabile */}
         <motion.div
-          className="relative w-full h-full rounded-3xl shadow-2xl shadow-black/50 z-20 overflow-hidden cursor-pointer"
+          className="relative w-full h-full rounded-3xl shadow-2xl shadow-black/50 z-20 overflow-hidden cursor-pointer border border-zinc-800/50 hover:border-zinc-700/50 transition-colors duration-500 bg-zinc-950"
           whileHover={{
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7)",
             y: -5,

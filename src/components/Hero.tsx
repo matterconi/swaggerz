@@ -42,45 +42,27 @@ const BentoHero = () => {
           />
 
           {/* HeroDropCard - 2 columns, 3 rows */}
-          <div 
-            className="group relative bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-3xl p-4 lg:p-6 border border-zinc-800/50 md:col-span-2 md:row-span-2 overflow-hidden hover:border-zinc-700/50 transition-all duration-500"
+          <div
+            className="md:col-span-2 md:row-span-2 overflow-hidden"
             onMouseEnter={() => setHoveredCard('drops')}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
-            <div className="relative h-full w-full flex items-center justify-center">
-              <HeroDropCard
-                currentCollection={currentCollection}
-                collections={collections}
-                onCollectionChange={setCurrentCollection}
-              />
-            </div>
+            <HeroDropCard
+              currentCollection={currentCollection}
+              collections={collections}
+              onCollectionChange={setCurrentCollection}
+            />
           </div>
 
-          {/* Services Grid - 4 cards in una riga */}
-          <HeroServiceCard
-            icon={Package}
-            iconColor="text-green-500"
-            gradientColors="bg-gradient-to-br from-green-500/5 to-emerald-500/5"
-            title="Print on Demand"
-            description="Stampa premium su materiali di alta qualità"
-            cardId="service1"
-            onHover={setHoveredCard}
-            onLeave={() => setHoveredCard(null)}
-          />
+          {/* Featured Categories - Under HeroDropImage, 2 rows */}
+          <div className="md:col-span-2 md:row-span-2">
+            <HeroCategoriesCard
+              onHover={() => setHoveredCard('categories')}
+              onLeave={() => setHoveredCard(null)}
+            />
+          </div>
 
-          <HeroServiceCard
-            icon={Palette}
-            iconColor="text-purple-500"
-            gradientColors="bg-gradient-to-br from-purple-500/5 to-violet-500/5"
-            title="Artist Collab"
-            description="Collabora con artisti internazionali"
-            cardId="service2"
-            onHover={setHoveredCard}
-            onLeave={() => setHoveredCard(null)}
-          />
-
+          {/* Services Grid - 2 cards in una riga */}
           <HeroServiceCard
             icon={Zap}
             iconColor="text-orange-500"
@@ -94,18 +76,6 @@ const BentoHero = () => {
 
           <HeroTrustCard
             onHover={() => setHoveredCard('trust')}
-            onLeave={() => setHoveredCard(null)}
-          />
-
-          {/* Featured Categories */}
-          <HeroCategoriesCard
-            onHover={() => setHoveredCard('categories')}
-            onLeave={() => setHoveredCard(null)}
-          />
-
-          {/* Newsletter CTA */}
-          <HeroNewsletterCard
-            onHover={() => setHoveredCard('newsletter')}
             onLeave={() => setHoveredCard(null)}
           />
 

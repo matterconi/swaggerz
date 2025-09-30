@@ -5,7 +5,7 @@ import { Sparkles, Eye, ArrowRight } from 'lucide-react';
 import ShaderText from '@/components/ShaderText';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import CardStack from './CardStack';
-import ArrowCTA from './ArrowCTA'
+import CircularButton from './CircularButton'
 
 interface HeroMainCardProps {
   onHover: () => void;
@@ -131,7 +131,7 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
           >
             <ShaderText
               className="block leading-none"
-              fontSize="clamp(2.8rem, 6vw, 4.5rem)"
+              fontSize="clamp(3.5rem, 7vw, 6rem)"
               fontWeight="900"
             >
               SWAGGERZ
@@ -165,9 +165,9 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
         />
       </div>
 
-      {/* Arrow CTA */}
+      {/* Magnetic Circular CTA */}
       <div className="flex-shrink-0">
-        <ArrowCTA />
+        <CircularButton />
       </div>
     </div>
   </div>

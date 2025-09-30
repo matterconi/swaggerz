@@ -1,7 +1,8 @@
 "use client"
 
-import React from 'react';
-import { Star } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 interface HeroCategoriesCardProps {
   onHover: () => void;
@@ -9,35 +10,189 @@ interface HeroCategoriesCardProps {
 }
 
 const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeave }) => {
-  const categories = ['T-Shirts', 'Hoodies', 'Canvas', 'Accessories'];
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
+  const [canScrollRight, setCanScrollRight] = React.useState(true);
+
+  const products = [
+    {
+      name: 'Classic Tee',
+      category: 'T-Shirt',
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop',
+      price: '29.99€'
+    },
+    {
+      name: 'Urban Hoodie',
+      category: 'Felpe',
+      image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=500&fit=crop',
+      price: '59.99€'
+    },
+    {
+      name: 'Joggers',
+      category: 'Pantaloni',
+      image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=500&fit=crop',
+      price: '49.99€'
+    },
+    {
+      name: 'Winter Jacket',
+      category: 'Giubbotti',
+      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=500&fit=crop',
+      price: '89.99€'
+    },
+    {
+      name: 'Graphic Tee',
+      category: 'T-Shirt',
+      image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&h=500&fit=crop',
+      price: '34.99€'
+    },
+    {
+      name: 'Zip Hoodie',
+      category: 'Felpe',
+      image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&h=500&fit=crop',
+      price: '64.99€'
+    }
+  ];
+
+  const updateScrollButtons = React.useCallback(() => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    updateScrollButtons();
+    scrollContainer.addEventListener('scroll', updateScrollButtons);
+    window.addEventListener('resize', updateScrollButtons);
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', updateScrollButtons);
+      window.removeEventListener('resize', updateScrollButtons);
+    };
+  }, [updateScrollButtons]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 200;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <div
-      className="group relative bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-3xl p-6 border border-zinc-800/50 md:col-span-2 overflow-hidden hover:border-zinc-700/50 transition-all duration-500"
+      className="group relative bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-3xl p-4 lg:p-6 border border-zinc-800/50 overflow-hidden hover:border-zinc-700/50 transition-all duration-500 h-full"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-      <div className="relative h-full">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-white font-semibold flex items-center gap-2">
-            <Star className="w-5 h-5 text-yellow-500" />
-            Categorie Popolari
-          </h3>
+      <div className="relative h-full flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 lg:mb-6">
+          <div>
+            <h3 className="text-white text-lg lg:text-xl font-bold flex items-center gap-2 mb-1">
+              <Star className="w-6 h-6 text-yellow-500" />
+              Categorie Popolari
+            </h3>
+            <p className="text-zinc-400 text-sm hidden lg:block">Scopri i nostri prodotti più venduti</p>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => scroll('left')}
+              className="p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30"
+              aria-label="Scorri a sinistra"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => scroll('right')}
+              className="p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30"
+              aria-label="Scorri a destra"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-3">
-          {categories.map((cat, i) => (
-            <div key={i} className="text-center group/cat cursor-pointer">
-              <div className="bg-zinc-800/50 rounded-xl p-3 mb-2 group-hover/cat:bg-zinc-700/50 transition-colors">
-                <div className="w-full aspect-square bg-gradient-to-br from-zinc-700 to-zinc-800 rounded-lg" />
+        {/* Products Slider */}
+        <div className="relative flex-1 overflow-hidden">
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-4 lg:gap-5 overflow-x-auto scrollbar-hide scroll-smooth h-full pb-2"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {products.map((product, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[180px] lg:w-[220px] h-full group/cat cursor-pointer"
+              >
+                <div className="relative h-full bg-zinc-800/30 rounded-2xl overflow-hidden hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-800/30 hover:border-zinc-700/50 flex flex-col">
+                  {/* Image - Takes all available space */}
+                  <div className="relative w-full flex-grow overflow-hidden">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover group-hover/cat:scale-110 transition-transform duration-500"
+                      sizes="(max-width: 1024px) 180px, 220px"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
+
+                    {/* Hover Overlay with Text */}
+                    <div className="absolute inset-0 bg-black/75 opacity-0 group-hover/cat:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="text-center px-3">
+                        <p className="text-white font-bold text-base lg:text-lg mb-2">{product.name}</p>
+                        <p className="text-zinc-200 text-sm lg:text-base font-medium">{product.price}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Info - Fixed at bottom */}
+                  <div className="flex-shrink-0 p-3 lg:p-4 bg-zinc-900/50">
+                    <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
+                      {product.category}
+                    </p>
+                    <p className="text-sm lg:text-base text-white font-semibold truncate mb-1">
+                      {product.name}
+                    </p>
+                    <p className="text-sm lg:text-base text-zinc-300 font-medium">{product.price}</p>
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-zinc-400 group-hover/cat:text-white transition-colors">{cat}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Gradient Fade Edges */}
+          <div
+            className={`absolute left-0 top-0 bottom-0 w-12 lg:w-16 bg-gradient-to-r from-zinc-900 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
+              !canScrollLeft ? "opacity-0" : "opacity-100"
+            }`}
+          />
+          <div
+            className={`absolute right-0 top-0 bottom-0 w-12 lg:w-16 bg-gradient-to-l from-zinc-900 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
+              !canScrollRight ? "opacity-0" : "opacity-100"
+            }`}
+          />
         </div>
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 };
