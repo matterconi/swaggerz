@@ -73,22 +73,12 @@ const HeroDropCard: React.FC<HeroDropCardProps> = ({
     <div className="relative w-full h-full flex flex-col items-center justify-center">
       <motion.div
         className="relative w-full h-full group"
-        whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        {/* Contenitore immagine con animazioni avanzate - Ora cliccabile */}
+        {/* Contenitore immagine */}
         <motion.div
-          className="relative w-full h-full rounded-3xl shadow-2xl shadow-black/50 z-20 overflow-hidden cursor-pointer border border-zinc-800/50 hover:border-zinc-700/50 transition-colors duration-500 bg-zinc-950"
-          whileHover={{
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7)",
-            y: -5,
-            scale: 1.01
-          }}
-          whileTap={{ scale: 0.98 }}
+          className="relative w-full h-full rounded-3xl shadow-2xl shadow-black/50 z-20 overflow-hidden border border-zinc-800/50 transition-colors duration-500 bg-zinc-950"
           transition={{ duration: 0.4, ease: "easeOut" }}
-          onClick={() => {
-            console.log(`Navigating to ${collections[currentCollection].name} collection`);
-          }}
         >
           {/* Collection Images Carousel con direzioni randomiche corrette */}
           <div className="relative w-full h-full">

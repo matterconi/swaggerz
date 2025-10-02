@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 interface CollectionInfoOverlayProps {
   collection: any;
@@ -11,6 +11,8 @@ const CollectionInfoOverlay: React.FC<CollectionInfoOverlayProps> = ({
   collection,
   currentCollection
 }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+
   return (
     <AnimatePresence mode="sync">
       <motion.div
@@ -142,24 +144,58 @@ const CollectionInfoOverlay: React.FC<CollectionInfoOverlayProps> = ({
                 {collection.price}
               </span>
               
-              {/* CTA minimalista integrata */}
-              <motion.div
-                className="group flex items-center gap-2 text-white/70 hover:text-white transition-all duration-300 cursor-pointer"
-                whileHover={{ x: 3, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              {/* CTA esplorativa */}
+              <motion.button
+                className="group relative flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-white/10 to-white/5 backdrop-blur-md border border-white/20 overflow-hidden"
+                whileTap={{ scale: 0.96 }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
                 onClick={(e) => {
                   e.stopPropagation();
                   console.log(`Navigating to ${collection.name} collection`);
                 }}
               >
-                <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 group-hover:bg-white/20 group-hover:border-white/40 transition-all duration-300">
-                  <Eye size={12} className="text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
-                </div>
-                
-                <span className="text-xs font-medium uppercase tracking-wider group-hover:tracking-widest transition-all duration-300">
-                  VEDI
+                {/* Animated shine effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full"
+                  animate={isHovered ? { x: ['0%', '200%'] } : {}}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+
+                {/* Glow background on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 blur-sm transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+
+                <span className={`relative text-xs font-bold uppercase tracking-wide transition-all duration-300 ${isHovered ? 'text-white translate-x-0.5' : 'text-white/90'}`}>
+                  Esplora
                 </span>
-              </motion.div>
+
+                {/* Icon with animated container */}
+                <div className="relative flex items-center justify-center">
+                  <motion.div
+                    className={`absolute inset-0 w-6 h-6 rounded-full transition-all duration-300 ${isHovered ? 'bg-orange-500/30 scale-100' : 'bg-transparent scale-0'}`}
+                  />
+                  <motion.div
+                    animate={isHovered ? { scale: 1, opacity: 1 } : {
+                      scale: [1, 1.2, 1],
+                      opacity: [0.7, 1, 0.7]
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: isHovered ? 0 : Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <Sparkles
+                      size={14}
+                      className={`relative transition-colors duration-300 ${isHovered ? 'text-white' : 'text-orange-400'}`}
+                      strokeWidth={2.5}
+                    />
+                  </motion.div>
+                </div>
+
+                {/* Border highlight on hover */}
+                <div className={`absolute inset-0 rounded-full border border-orange-500/60 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+              </motion.button>
             </motion.div>
           </div>
         </motion.div>

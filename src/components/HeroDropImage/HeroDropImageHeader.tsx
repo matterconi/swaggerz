@@ -33,7 +33,7 @@ const DropHeader: React.FC = () => {
                     '0 0 4px rgba(34, 197, 94, 0.4)'
                   ]
                 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
               <motion.div 
                 className="absolute inset-0 w-2 h-2 bg-green-400 rounded-full"

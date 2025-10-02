@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import { vertexShader, darkFragmentShader } from '@/constants/shaders';
 
@@ -10,36 +10,18 @@ interface CircularButtonProps {
   buttonRef?: React.RefObject<HTMLButtonElement>;
   isHovered?: boolean;
   setIsHovered?: (hovered: boolean) => void;
-  buttonX?: any;
-  buttonY?: any;
 }
-
-// Funzione per normalizzare la rotazione e prendere il percorso più breve
-const normalizeAngle = (current: number, target: number) => {
-  let diff = target - current;
-  
-  // Normalizza la differenza tra -180 e 180
-  while (diff > 180) diff -= 360;
-  while (diff < -180) diff += 360;
-  
-  return current + diff;
-};
 
 const CircularButton: React.FC<CircularButtonProps> = ({
   text = "SCOPRI LA GALLERIA",
   onClick,
   buttonRef,
   isHovered = false,
-  setIsHovered,
-  buttonX,
-  buttonY
+  setIsHovered
 }) => {
   const size = 128;
   const center = size / 2;
   const textRadius = 46;
-
-  const [arrowRotation, setArrowRotation] = React.useState(-45);
-  const [delayTimeout, setDelayTimeout] = React.useState<NodeJS.Timeout | null>(null);
 
   // Shader background refs
   const shaderCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -48,67 +30,6 @@ const CircularButton: React.FC<CircularButtonProps> = ({
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const animationRef = useRef<number | null>(null);
   const [shaderDataUrl, setShaderDataUrl] = useState<string>('');
-
-  // Motion values per l'effetto magnetico
-  const magneticX = useMotionValue(0);
-  const magneticY = useMotionValue(0);
-  
-  // Spring per rendere il movimento fluido
-  const springConfig = { damping: 20, stiffness: 300 };
-  const magneticSpringX = useSpring(magneticX, springConfig);
-  const magneticSpringY = useSpring(magneticY, springConfig);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!buttonRef?.current) return;
-
-    const rect = buttonRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    // Calcola l'angolo per la freccia
-    const angleRad = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-    const angleDeg = angleRad * (180 / Math.PI);
-    setArrowRotation(prev => normalizeAngle(prev, angleDeg));
-
-    // Effetto magnetico: sposta leggermente il bottone verso il mouse
-    const distanceX = e.clientX - centerX;
-    const distanceY = e.clientY - centerY;
-    
-    // Limita il movimento a max 8px in ogni direzione
-    const maxMove = 8;
-    const moveX = Math.max(-maxMove, Math.min(maxMove, distanceX * 0.15));
-    const moveY = Math.max(-maxMove, Math.min(maxMove, distanceY * 0.15));
-    
-    magneticX.set(moveX);
-    magneticY.set(moveY);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered?.(false);
-    
-    // Reset posizione magnetica
-    magneticX.set(0);
-    magneticY.set(0);
-    
-    // Delay di 300ms prima di far tornare la freccia alla posizione iniziale
-    if (delayTimeout) {
-      clearTimeout(delayTimeout);
-    }
-    
-    const timeout = setTimeout(() => {
-      setArrowRotation(prev => normalizeAngle(prev, -45));
-    }, 300);
-    
-    setDelayTimeout(timeout);
-  };
-
-  React.useEffect(() => {
-    return () => {
-      if (delayTimeout) {
-        clearTimeout(delayTimeout);
-      }
-    };
-  }, [delayTimeout]);
 
   // Setup Three.js shader
   useEffect(() => {
@@ -185,17 +106,13 @@ const CircularButton: React.FC<CircularButtonProps> = ({
     };
   }, [size]);
 
-  const magneticAreaSize = size + 80; // Area magnetica più grande del bottone
-
   return (
     <div
       className="relative"
       style={{
-        width: magneticAreaSize,
-        height: magneticAreaSize,
+        width: size,
+        height: size,
       }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Canvas nascosto per generare lo shader */}
       <canvas
@@ -214,11 +131,9 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         style={{
           width: size + 40,
           height: size + 40,
-          left: (magneticAreaSize - size - 40) / 2,
-          top: (magneticAreaSize - size - 40) / 2,
-          x: magneticSpringX,
-          y: magneticSpringY,
-          background: `radial-gradient(circle,
+          left: -20,
+          top: -20,
+          backgroundImage: `radial-gradient(circle,
             rgba(249, 115, 22, 0.3) 0%,
             rgba(239, 68, 68, 0.2) 40%,
             rgba(234, 179, 8, 0.1) 60%,
@@ -234,15 +149,14 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         ref={buttonRef}
         onClick={onClick}
         onMouseEnter={() => setIsHovered?.(true)}
+        onMouseLeave={() => setIsHovered?.(false)}
         className="absolute group/btn focus:outline-none rounded-full p-0 overflow-hidden cursor-pointer"
         style={{
           width: size,
           height: size,
-          left: (magneticAreaSize - size) / 2,
-          top: (magneticAreaSize - size) / 2,
-          x: magneticSpringX,
-          y: magneticSpringY,
-          background: shaderDataUrl
+          left: 0,
+          top: 0,
+          backgroundImage: shaderDataUrl
             ? `url(${shaderDataUrl})`
             : 'linear-gradient(to bottom right, rgb(239, 68, 68), rgb(249, 115, 22), rgb(234, 179, 8))',
           backgroundSize: 'cover',
@@ -314,24 +228,13 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         </motion.g>
       </svg>
 
-      {/* Cerchio centrale con freccia - trasparente per ereditare il gradiente */}
+      {/* Cerchio centrale con freccia statica */}
       <div className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-transparent flex items-center justify-center">
-        <motion.div
-          animate={{
-            rotate: arrowRotation,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 200,
-            damping: 15
-          }}
-        >
-          <ArrowRight className="size-12 text-white font-bold" />
-        </motion.div>
+        <ArrowRight className="size-12 text-white font-bold" style={{ rotate: '-45deg' }} />
       </div>
     </motion.button>
     </div>
   );
 };
 
-export default CircularButton
+export default CircularButton;

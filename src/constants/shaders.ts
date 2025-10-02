@@ -75,10 +75,10 @@ export const darkFragmentShader: string = `
 
     float pattern = (mainWave + verticalWave + diagonalWave) * 0.4 + 0.5;
 
-    // Colori intermedi: né troppo chiari né troppo scuri
-    vec3 darkRed = vec3(0.85, 0.18, 0.18);     // Rosso medio-scuro
-    vec3 darkOrange = vec3(0.9, 0.45, 0.05);   // Arancione medio-scuro
-    vec3 darkYellow = vec3(0.9, 0.65, 0.05);   // Giallo medio-scuro
+    // Colori bilanciati per contrasto ottimale con testo bianco
+    vec3 darkRed = vec3(0.88, 0.22, 0.22);     // Rosso bilanciato
+    vec3 darkOrange = vec3(0.92, 0.48, 0.12);   // Arancione bilanciato
+    vec3 darkYellow = vec3(0.92, 0.68, 0.12);   // Giallo bilanciato
 
     // Selezione colore identica
     vec3 color;
@@ -92,8 +92,8 @@ export const darkFragmentShader: string = `
       color = mix(darkYellow, darkRed, fract(colorIndex));
     }
 
-    // Luminosità bilanciata per contrasto con testo bianco
-    float brightness = 0.75 + sin(time * 1.5 + uv.x * 3.0) * 0.12;
+    // Luminosità ottimizzata per contrasto con testo bianco
+    float brightness = 0.82 + sin(time * 1.5 + uv.x * 3.0) * 0.10;
     color *= brightness;
 
     // Saturazione mantenuta per colori vivaci anche se scuri

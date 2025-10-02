@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useRef } from 'react';
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
 interface HeroCategoriesCardProps {
@@ -140,7 +140,7 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
               >
                 <div className="relative h-full bg-zinc-800/30 rounded-2xl overflow-hidden hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-800/30 hover:border-zinc-700/50 flex flex-col">
                   {/* Image - Takes all available space */}
-                  <div className="relative w-full flex-grow overflow-hidden">
+                  <div className="relative w-full flex-grow overflow-hidden min-h-[200px] md:min-h-[250px] lg:min-h-0">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -167,7 +167,13 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
                     <p className="text-sm lg:text-base text-white font-semibold truncate mb-1">
                       {product.name}
                     </p>
-                    <p className="text-sm lg:text-base text-zinc-300 font-medium">{product.price}</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm lg:text-base text-zinc-300 font-medium">{product.price}</p>
+                      <div className="flex items-center gap-1 text-zinc-400 group-hover/cat:text-white transition-all duration-300">
+                        <span className="text-xs font-medium">Scopri</span>
+                        <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/cat:translate-x-0.5 transition-transform duration-300" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

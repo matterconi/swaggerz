@@ -1,10 +1,9 @@
 "use client"
 
-import React from 'react';
-import { Sparkles, Eye, ArrowRight } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import ShaderText from '@/components/ShaderText';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import CardStack from './CardStack';
+import { motion } from 'framer-motion';
+import CircularGallery from './CircularGallery';
 import CircularButton from './CircularButton'
 
 interface HeroMainCardProps {
@@ -13,53 +12,48 @@ interface HeroMainCardProps {
 }
 
 const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
-  const artPreviews = [
-    { id: 1, image: '/DigitalArtDrop.webp', title: 'Digital Art Collection' },
-    { id: 2, image: '/VintageDrop.webp', title: 'Vintage Series' },
-    { id: 3, image: '/trending-1.png', title: 'Abstract Works' },
-    { id: 4, image: '/DigitalArtDrop.webp', title: 'Digital Art Collection' },
-    { id: 5, image: '/VintageDrop.webp', title: 'Vintage Series' },
-    { id: 6, image: '/trending-1.png', title: 'Abstract Works' }
-  ];
+  const titleContainerRef = useRef<HTMLDivElement>(null);
+  const [titleFontSize, setTitleFontSize] = useState('5rem');
 
-  const [isButtonHovered, setIsButtonHovered] = React.useState(false);
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  // Calcola dinamicamente la dimensione del titolo
+  useEffect(() => {
+    const calculateFontSize = () => {
+      if (!titleContainerRef.current) return;
 
-  // Magnetic effect with Framer Motion
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  const springConfig = { damping: 25, stiffness: 200 };
-  const buttonX = useSpring(mouseX, springConfig);
-  const buttonY = useSpring(mouseY, springConfig);
+      const container = titleContainerRef.current;
+      const availableWidth = container.clientWidth;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!buttonRef.current || isButtonHovered) return;
-    
-    const rect = buttonRef.current.getBoundingClientRect();
-    const buttonCenterX = rect.left + rect.width / 2;
-    const buttonCenterY = rect.top + rect.height / 2;
-    
-    const distanceX = e.clientX - buttonCenterX;
-    const distanceY = e.clientY - buttonCenterY;
-    const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-    
-    if (distance < 120 && distance > 50) {
-      const strength = 0.15;
-      mouseX.set(distanceX * strength);
-      mouseY.set(distanceY * strength);
-    } else {
-      mouseX.set(0);
-      mouseY.set(0);
+      // "SWAGGERZ" ha 9 caratteri
+      // Stima: larghezza carattere ≈ 0.6 × fontSize per font bold
+      const charCount = 9;
+      const charWidthRatio = 0.6;
+
+      // Calcola fontSize ideale con margine del 10%
+      const idealFontSize = (availableWidth * 0.9) / (charCount * charWidthRatio);
+
+      // Limiti min/max in px
+      const minSize = 40;
+      const maxSize = 120;
+      const fontSize = Math.max(minSize, Math.min(maxSize, idealFontSize));
+
+      setTitleFontSize(`${fontSize}px`);
+    };
+
+    calculateFontSize();
+
+    const resizeObserver = new ResizeObserver(calculateFontSize);
+    if (titleContainerRef.current) {
+      resizeObserver.observe(titleContainerRef.current);
     }
-  };
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   return (
     <motion.div
-      className="group relative bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-3xl p-6 lg:p-8 border border-zinc-800/50 md:col-span-2 md:row-span-3 overflow-hidden"
+      className="group relative md:bg-gradient-to-br md:from-zinc-900 md:to-zinc-950 md:rounded-3xl p-6 lg:p-8 md:border md:border-zinc-800/50 overflow-hidden h-full"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      onMouseMove={handleMouseMove}
       whileHover={{ borderColor: 'rgba(113, 113, 122, 0.5)' }}
       transition={{ duration: 0.5 }}
     >
@@ -97,81 +91,62 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
         }}
       />
 
-      <div className="relative h-full flex flex-col">
+      <div className="relative h-full flex flex-col mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <motion.div 
-            className="flex items-center gap-3 mb-6"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.7, 1, 0.7]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              <Sparkles className="w-4 h-4 text-orange-400" />
-            </motion.div>
-            <span className="text-zinc-400 tracking-[0.2em] uppercase text-xs font-medium">NFT × Streetwear</span>
-          </motion.div>
-
+        <div className="mb-4">
           {/* Title with ShaderText preserved */}
-          <motion.div 
-            className="space-y-4 mb-6"
+          <motion.div
+            ref={titleContainerRef}
+            className="space-y-2 md:space-y-4 mb-3 md:my-8 flex flex-col justify-center items-center max-w-[600px] mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <ShaderText
               className="block leading-none"
-              fontSize="clamp(3.5rem, 7vw, 6rem)"
+              fontSize={titleFontSize}
               fontWeight="900"
             >
               SWAGGERZ
             </ShaderText>
 
-            <div className="relative">
-              <h2 className="text-zinc-100 text-2xl lg:text-3xl font-bold leading-tight max-w-xl">
-                Dove l'arte digitale
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-400 to-pink-400">
-                  diventa streetwear
-                </span>
-              </h2>
-              <p className="text-zinc-400 text-sm lg:text-base mt-3 max-w-lg">
-                NFT che indossi, non solo che possiedi
-              </p>
+          {/* Gallery Preview - visible only on mobile (up to md), above subtitle */}
+          <div className='w-full flex justify-center my-6 md:hidden'>
+            <div className="h-[140px] max-w-[600px] w-full">
+              <CircularGallery />
             </div>
+          </div>
+
+          <div className='w-full flex justify-center'>
+            <div className="flex flex-row justify-start lg:justify-between items-center pt-4 gap-4 md:gap-8 w-full max-w-[600px] px-4">
+              <div className="relative">
+                <h2 className="text-zinc-100 text-2xl lg:text-3xl font-bold leading-tight max-w-xl">
+                  Dove l&apos;arte digitale
+                  <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-400 to-pink-400">
+                    diventa streetwear
+                  </span>
+                </h2>
+                <p className="text-zinc-400 text-sm lg:text-base mt-3 max-w-lg">
+                  NFT che indossi, non solo che possiedi
+                </p>
+              </div>
+
+              {/* Circular Button - always visible */}
+              <div className="flex shrink-0">
+                <CircularButton />
+              </div>
+            </div>
+          </div>
           </motion.div>
         </div>
 
-        {/* Floating Gallery Preview with CTA */}
-<div className="flex-1 mb-8 flex flex-col">
-  <div className="relative flex-1 flex flex-col">
-    <div className="flex flex-1 items-center justify-between gap-8 ">
-      {/* Gallery Cards */}
-      <div className="flex-1 min-h-0 h-full">
-        <CardStack 
-          cards={artPreviews}
-          showMoreCard={true}
-          moreCount={100}
-        />
-      </div>
-
-      {/* Magnetic Circular CTA */}
-      <div className="flex-shrink-0">
-        <CircularButton />
-      </div>
-    </div>
-  </div>
-</div>
+        {/* Gallery Preview - visible only on desktop, at the bottom */}
+        <div className='w-full justify-center hidden md:flex flex-1 items-center'>
+          <div className="h-[200px] max-w-[600px] w-full">
+            <CircularGallery />
+          </div>
+        </div>
       </div>
     </motion.div>
   );

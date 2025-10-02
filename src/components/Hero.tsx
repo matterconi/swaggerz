@@ -13,14 +13,32 @@ import HeroNewsletterCard from './Hero/HeroNewsletterCard';
 const BentoHero = () => {
   const [currentCollection, setCurrentCollection] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [justExitedHover, setJustExitedHover] = useState(false);
 
-  // Auto-rotate collections
+  // Auto-rotate collections (pause on hover)
   useEffect(() => {
+    if (hoveredCard === 'drops') {
+      setJustExitedHover(false);
+      return; // Stop rotation when hovering drop card
+    }
+
+    // Se appena uscito dall'hover, aspetta 2.5s poi cambia immagine
+    if (justExitedHover) {
+      const quickTimeout = setTimeout(() => {
+        setCurrentCollection((prev) => (prev + 1) % collections.length);
+        setJustExitedHover(false);
+      }, 2500);
+
+      return () => clearTimeout(quickTimeout);
+    }
+
+    // Rotazione normale
     const interval = setInterval(() => {
       setCurrentCollection((prev) => (prev + 1) % collections.length);
     }, 4000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [hoveredCard, justExitedHover]);
 
 
   return (
@@ -33,19 +51,24 @@ const BentoHero = () => {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Bento Grid Container - Unica grid per tutto */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 auto-rows-[160px] lg:auto-rows-[200px]">
-          
-          {/* Main Title & CTA - Large card spanning 2 columns */}
-          <HeroMainCard
-            onHover={() => setHoveredCard('main')}
-            onLeave={() => setHoveredCard(null)}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto xl:auto-rows-[200px]">
 
-          {/* HeroDropCard - 2 columns, 3 rows */}
+          {/* Main Title & CTA - Full width on mobile, 1 column on lg, 2 columns on xl+ */}
+          <div className="lg:col-span-1 lg:row-span-3 xl:col-span-2">
+            <HeroMainCard
+              onHover={() => setHoveredCard('main')}
+              onLeave={() => setHoveredCard(null)}
+            />
+          </div>
+
+          {/* HeroDropCard - 1 column on lg, 2 columns on xl */}
           <div
-            className="md:col-span-2 md:row-span-2 overflow-hidden"
+            className="lg:col-span-1 lg:row-span-2 xl:col-span-2 overflow-hidden min-h-[400px] xl:min-h-0"
             onMouseEnter={() => setHoveredCard('drops')}
-            onMouseLeave={() => setHoveredCard(null)}
+            onMouseLeave={() => {
+              setHoveredCard(null);
+              setJustExitedHover(true);
+            }}
           >
             <HeroDropCard
               currentCollection={currentCollection}
@@ -55,7 +78,7 @@ const BentoHero = () => {
           </div>
 
           {/* Featured Categories - Under HeroDropImage, 2 rows */}
-          <div className="md:col-span-2 md:row-span-2">
+          <div className="lg:col-span-1 lg:row-span-2 xl:col-span-2">
             <HeroCategoriesCard
               onHover={() => setHoveredCard('categories')}
               onLeave={() => setHoveredCard(null)}
