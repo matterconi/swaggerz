@@ -19,9 +19,9 @@ const CircularButton: React.FC<CircularButtonProps> = ({
   isHovered = false,
   setIsHovered
 }) => {
-  const size = 128;
+  const size = 160;
   const center = size / 2;
-  const textRadius = 46;
+  const textRadius = 60;
 
   // Shader background refs
   const shaderCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -178,61 +178,61 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
-      {/* SVG per il testo rotante */}
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox={`0 0 ${size} ${size}`}
-        style={{ overflow: 'visible', pointerEvents: 'none' }}
-      >
-        <defs>
-          <path
-            id="textCircle"
-            d={`
-              M ${center}, ${center}
-              m -${textRadius}, 0
-              a ${textRadius},${textRadius} 0 1,1 ${textRadius * 2},0
-              a ${textRadius},${textRadius} 0 1,1 -${textRadius * 2},0
-            `}
-            fill="none"
-          />
-        </defs>
-        
-        <motion.g
-          animate={{
-            rotate: 360
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          style={{
-            transformOrigin: `${center}px ${center}px`
-          }}
+        {/* Testo rotante con SVG textPath */}
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox={`0 0 ${size} ${size}`}
+          style={{ overflow: 'visible', pointerEvents: 'none' }}
         >
-          <text
-            className="text-[9px] font-bold tracking-[0.15em] uppercase fill-white"
-            style={{ 
-              letterSpacing: '0.15em',
-              fontWeight: 700
+          <defs>
+            <path
+              id="textCircle"
+              d={`
+                M ${center}, ${center}
+                m -${textRadius}, 0
+                a ${textRadius},${textRadius} 0 1,1 ${textRadius * 2},0
+                a ${textRadius},${textRadius} 0 1,1 -${textRadius * 2},0
+              `}
+              fill="none"
+            />
+          </defs>
+          
+          <motion.g
+            animate={{
+              rotate: 360
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            style={{
+              transformOrigin: `${center}px ${center}px`
             }}
           >
-            <textPath
-              href="#textCircle"
-              startOffset="0%"
-              textAnchor="start"
+            <text
+              className="text-[12px] font-bold tracking-[0.15em] uppercase fill-white"
+              style={{ 
+                letterSpacing: '0.15em',
+                fontWeight: 700
+              }}
             >
-              {text} • {text} •
-            </textPath>
-          </text>
-        </motion.g>
-      </svg>
+              <textPath
+                href="#textCircle"
+                startOffset="0%"
+                textAnchor="start"
+              >
+                {text} • {text} •
+              </textPath>
+            </text>
+          </motion.g>
+        </svg>
 
-      {/* Cerchio centrale con freccia statica */}
-      <div className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-transparent flex items-center justify-center">
-        <ArrowRight className="size-12 text-white font-bold" style={{ rotate: '-45deg' }} />
-      </div>
-    </motion.button>
+        {/* Cerchio centrale con freccia statica */}
+        <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-transparent flex items-center justify-center">
+          <ArrowRight className="size-12 text-white font-bold" style={{ rotate: '-45deg' }} />
+        </div>
+      </motion.button>
     </div>
   );
 };

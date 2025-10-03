@@ -8,7 +8,6 @@ import HeroMainCard from './Hero/HeroMainCard';
 import HeroServiceCard from './Hero/HeroServiceCard';
 import HeroTrustCard from './Hero/HeroTrustCard';
 import HeroCategoriesCard from './Hero/HeroCategoriesCard';
-import HeroNewsletterCard from './Hero/HeroNewsletterCard';
 
 const BentoHero = () => {
   const [currentCollection, setCurrentCollection] = useState(0);

@@ -7,6 +7,8 @@ import { useRandomDirections } from "@/hooks/useRandomDirections"
 import NavigationDots from './NavigationDots';
 import CollectionInfoOverlay from './CollectionInfoOverlay';
 import DynamicGlowEffect from './DynamicGlowEffect';
+import LatestDropsBadge from './LatestDropsBadge';
+
 
 interface Collection {
   id: number;
@@ -75,6 +77,9 @@ const HeroDropCard: React.FC<HeroDropCardProps> = ({
         className="relative w-full h-full group"
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
+        <div className="absolute -top-1 -right-1 z-50">
+        <LatestDropsBadge />
+      </div>
         {/* Contenitore immagine */}
         <motion.div
           className="relative w-full h-full rounded-3xl shadow-2xl shadow-black/50 z-20 overflow-hidden border border-zinc-800/50 transition-colors duration-500 bg-zinc-950"
@@ -159,17 +164,6 @@ const HeroDropCard: React.FC<HeroDropCardProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.3 }}
-          />
-
-          {/* Dynamic Glow Effect Component */}
-          <DynamicGlowEffect currentCollection={currentCollection} />
-
-          {/* Subtle texture overlay */}
-          <motion.div 
-            className="absolute inset-0 bg-black/10 mix-blend-multiply"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
           />
 
           {/* Collection Info Overlay Component */}

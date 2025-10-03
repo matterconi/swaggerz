@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import ShaderText from '@/components/ShaderText';
 import { motion } from 'framer-motion';
 import CircularGallery from './CircularGallery';
-import CircularButton from './CircularButton'
+import CircularButton from './CircularButton';
+import { Flame } from 'lucide-react';
 
 interface HeroMainCardProps {
   onHover: () => void;
@@ -23,9 +24,9 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
       const container = titleContainerRef.current;
       const availableWidth = container.clientWidth;
 
-      // "SWAGGERZ" ha 9 caratteri
+      // "SWAGGERZ" ha 9 caratteri + icona flame (circa 1.5 caratteri)
       // Stima: larghezza carattere ≈ 0.6 × fontSize per font bold
-      const charCount = 9;
+      const charCount = 10.5;
       const charWidthRatio = 0.6;
 
       // Calcola fontSize ideale con margine del 10%
@@ -51,43 +52,62 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
   return (
     <motion.div
-      className="group relative md:bg-gradient-to-br md:from-zinc-900 md:to-zinc-950 md:rounded-3xl p-6 lg:p-8 md:border md:border-zinc-800/50 overflow-hidden h-full"
+      className="group relative md:bg-gradient-to-br md:from-zinc-900 md:via-zinc-900 md:to-black md:rounded-3xl p-6 lg:p-8 md:border md:border-zinc-700/50 overflow-hidden h-full"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      whileHover={{ borderColor: 'rgba(113, 113, 122, 0.5)' }}
-      transition={{ duration: 0.5 }}
+      whileHover={{ 
+        borderColor: 'rgba(251, 146, 60, 0.5)',
+        scale: 1.01
+      }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
     >
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-orange-500/5"
+      {/* Gradient overlay on hover */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-orange-600/15 via-red-600/10 to-pink-600/15"
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       />
 
-      {/* Animated background elements */}
-      <motion.div 
-        className="absolute top-4 right-4 w-32 h-32 bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-full blur-2xl"
+      {/* Animated gradient orbs */}
+      <motion.div
+        className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-orange-500/25 via-red-500/15 to-transparent rounded-full blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
-          opacity: [0.5, 0.8, 0.5]
+          opacity: [0.6, 0.8, 0.6]
         }}
         transition={{
-          duration: 3,
+          duration: 5,
           repeat: Infinity,
           ease: "easeInOut"
         }}
       />
-      <motion.div 
-        className="absolute bottom-8 left-8 w-24 h-24 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-xl"
+      
+      <motion.div
+        className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-purple-600/25 via-pink-500/15 to-transparent rounded-full blur-3xl"
         animate={{
           scale: [1, 1.3, 1],
-          opacity: [0.4, 0.7, 0.4]
+          opacity: [0.6, 0.8, 0.6]
         }}
         transition={{
-          duration: 4,
+          duration: 6,
           repeat: Infinity,
           ease: "easeInOut",
           delay: 1
+        }}
+      />
+
+      {/* Center accent glow */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-yellow-400/10 via-orange-500/12 to-red-500/10 rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.4, 0.6, 0.4]
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
         }}
       />
 
@@ -102,13 +122,18 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <ShaderText
-              className="block leading-none"
-              fontSize={titleFontSize}
-              fontWeight="900"
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
             >
-              SWAGGERZ
-            </ShaderText>
+              <ShaderText
+                className="block leading-none"
+                fontSize={titleFontSize}
+                fontWeight="900"
+              >
+                SWAGGERZ 🔥
+              </ShaderText>
+            </motion.div>
 
           {/* Gallery Preview - visible only on mobile (up to md), above subtitle */}
           <div className='w-full flex justify-center my-6 md:hidden'>
@@ -119,7 +144,12 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
           <div className='w-full flex justify-center'>
             <div className="flex flex-row justify-start lg:justify-between items-center pt-4 gap-4 md:gap-8 w-full max-w-[600px] px-4">
-              <div className="relative">
+              <motion.div 
+                className="relative"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
                 <h2 className="text-zinc-100 text-2xl lg:text-3xl font-bold leading-tight max-w-xl">
                   Dove l&apos;arte digitale
                   <br />
@@ -130,12 +160,16 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
                 <p className="text-zinc-400 text-sm lg:text-base mt-3 max-w-lg">
                   NFT che indossi, non solo che possiedi
                 </p>
-              </div>
+              </motion.div>
 
               {/* Circular Button - always visible */}
-              <div className="flex shrink-0">
+              <motion.div 
+                className="flex shrink-0"
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
+              >
                 <CircularButton />
-              </div>
+              </motion.div>
             </div>
           </div>
           </motion.div>
@@ -143,9 +177,14 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
         {/* Gallery Preview - visible only on desktop, at the bottom */}
         <div className='w-full justify-center hidden md:flex flex-1 items-center'>
-          <div className="h-[200px] max-w-[600px] w-full">
+          <motion.div 
+            className="h-[200px] max-w-[600px] w-full"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
             <CircularGallery />
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.div>
