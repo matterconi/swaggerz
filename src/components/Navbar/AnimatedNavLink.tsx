@@ -31,20 +31,66 @@ function AnimatedText({
   isActive: boolean;
   isSemiActive: boolean;
 }) {
-  const getColor = () => {
-    if (isActive) return "rgb(249 115 22)"; // orange-500
-    if (isSemiActive) return "rgb(251 146 60)"; // orange-400
-    return "rgb(255 255 255)"; // white
-  };
+  const whiteIconRef = useRef<HTMLSpanElement>(null);
+  const orangeIconRef = useRef<HTMLSpanElement>(null);
+
+  // Forza i colori delle icone con !important per sovrascrivere l'eredità del parent
+  useEffect(() => {
+    if (whiteIconRef.current) {
+      whiteIconRef.current.style.setProperty('color', 'rgb(255 255 255)', 'important');
+      const svg = whiteIconRef.current.querySelector('svg');
+      if (svg) {
+        svg.style.setProperty('color', 'rgb(255 255 255)', 'important');
+      }
+    }
+    
+    if (orangeIconRef.current) {
+      const color = isActive ? 'rgb(249 115 22)' : 'rgb(251 146 60)';
+      orangeIconRef.current.style.setProperty('color', color, 'important');
+      const svg = orangeIconRef.current.querySelector('svg');
+      if (svg) {
+        svg.style.setProperty('color', color, 'important');
+      }
+    }
+  }, [isActive, isSemiActive]);
 
   return (
     <span className="flex items-center gap-2">
-      {/* Icona con colore inline style per forzare il cambio */}
-      <span 
-        className="flex-shrink-0 [&>svg]:transition-colors [&>svg]:duration-200"
-        style={{ color: getColor() }}
-      >
-        {icon}
+      {/* Contenitore dell'icona con animazione sliding */}
+      <span className="relative inline-flex items-center w-[1.2em] h-[1.2em] overflow-hidden flex-shrink-0">
+        {/* Icona bianca - esce verso l'alto */}
+        <motion.span
+          ref={whiteIconRef}
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{
+            y: isActive || isSemiActive ? '-150%' : '0%',
+            opacity: isActive || isSemiActive ? 0 : 1
+          }}
+          transition={{
+            duration: 0.4,
+            ease: [0.34, 1.56, 0.64, 1],
+            opacity: { duration: 0.25 }
+          }}
+        >
+          {icon}
+        </motion.span>
+
+        {/* Icona arancione - entra dal basso */}
+        <motion.span
+          ref={orangeIconRef}
+          className="absolute inset-0 flex items-center justify-center"
+          animate={{
+            y: isActive || isSemiActive ? '0%' : '150%',
+            opacity: isActive || isSemiActive ? 1 : 0
+          }}
+          transition={{
+            duration: 0.4,
+            ease: [0.34, 1.56, 0.64, 1],
+            opacity: { duration: 0.25, delay: isActive || isSemiActive ? 0.05 : 0 }
+          }}
+        >
+          {icon}
+        </motion.span>
       </span>
 
       {/* Contenitore del testo con overflow */}
@@ -130,19 +176,14 @@ export default function AnimatedNavLink({
       <NavigationMenuItem>
         <NavigationMenuTrigger 
           ref={triggerRef}
-          className="!bg-zinc-950 focus:bg-transparent data-[active]:bg-transparent h-8 px-4 [&>svg]:ml-1 [&>svg]:transition-colors [&>svg]:duration-200"
-          style={{
-            // @ts-ignore - custom property per la freccia
-            '--icon-color': getChevronColor()
-          }}
+          className="!bg-zinc-950 focus:bg-transparent data-[active]:bg-transparent h-8 px-4"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          style={{
+            // Forza il colore per tutto il contenuto inclusa la freccia SVG
+            color: getChevronColor()
+          }}
         >
-          <style jsx>{`
-            button > svg {
-              color: ${getChevronColor()};
-            }
-          `}</style>
           <AnimatedText 
             icon={icon} 
             label={label} 

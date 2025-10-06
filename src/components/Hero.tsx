@@ -50,10 +50,10 @@ const BentoHero = () => {
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Bento Grid Container - Unica grid per tutto */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto xl:auto-rows-[200px]">
+        <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto xl:auto-rows-[200px]">
 
           {/* Main Title & CTA - Full width on mobile, 1 column on lg, 2 columns on xl+ */}
-          <div className="lg:col-span-1 lg:row-span-3 xl:col-span-2">
+          <div className="col-span-2 lg:col-span-1 lg:row-span-3 xl:col-span-2">
             <HeroMainCard
               onHover={() => setHoveredCard('main')}
               onLeave={() => setHoveredCard(null)}
@@ -62,7 +62,7 @@ const BentoHero = () => {
 
           {/* HeroDropCard - 1 column on lg, 2 columns on xl */}
           <div
-            className="lg:col-span-1 lg:row-span-2 xl:col-span-2 overflow-hidden min-h-[400px] xl:min-h-0"
+            className="col-span-2 lg:col-span-1 lg:row-span-2 xl:col-span-2 overflow-hidden min-h-[400px] xl:min-h-0"
             onMouseEnter={() => setHoveredCard('drops')}
             onMouseLeave={() => {
               setHoveredCard(null);
@@ -77,29 +77,33 @@ const BentoHero = () => {
           </div>
 
           {/* Featured Categories - Under HeroDropImage, 2 rows */}
-          <div className="lg:col-span-1 lg:row-span-2 xl:col-span-2">
+          <div className="col-span-2 lg:col-span-1 lg:row-span-2 xl:col-span-2">
             <HeroCategoriesCard
               onHover={() => setHoveredCard('categories')}
               onLeave={() => setHoveredCard(null)}
             />
           </div>
 
-          {/* Services Grid - 2 cards in una riga */}
-          <HeroServiceCard
-            icon={Zap}
-            iconColor="text-orange-500"
-            gradientColors="bg-gradient-to-br from-orange-500/5 to-amber-500/5"
-            title="Fast Delivery"
-            description="Spedizione in 48h in tutta Italia"
-            cardId="service3"
-            onHover={setHoveredCard}
-            onLeave={() => setHoveredCard(null)}
-          />
+          {/* Services Grid - 2 cards in una riga sempre */}
+          <div className="col-span-1 lg:row-span-1 xl:col-span-1">
+            <HeroServiceCard
+              icon={Zap}
+              iconColor="text-orange-500"
+              gradientColors="bg-gradient-to-br from-orange-500/5 to-amber-500/5"
+              title="Fast Delivery"
+              description="Spedizione in 48h in tutta Italia"
+              cardId="service3"
+              onHover={setHoveredCard}
+              onLeave={() => setHoveredCard(null)}
+            />
+          </div>
 
-          <HeroTrustCard
-            onHover={() => setHoveredCard('trust')}
-            onLeave={() => setHoveredCard(null)}
-          />
+          <div className="col-span-1 lg:row-span-1 xl:col-span-1">
+            <HeroTrustCard
+              onHover={() => setHoveredCard('trust')}
+              onLeave={() => setHoveredCard(null)}
+            />
+          </div>
 
         </div>
       </div>

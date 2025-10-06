@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Slider from "@/components/Slider";
 import InfiniteScrollBanner from "@/components/InfiniteScrollBanner";
 import GalleryStrip from "@/components/Gallery/GalleryStrip";
+import NFTCollectionsSection from "@/components/NFTCollectionsSection";
 import { getDb } from "@/db";
 import { products } from "@/db/schema";
 import HeroSection from "@/components/Hero";
@@ -38,34 +39,7 @@ export default async function Home() {
     <div className="min-h-screen bg-[var(--color-light-100)] text-[var(--color-dark-900)] max-w-[100vw]">
       <Navbar />
       <HeroSection />
-      <InfiniteScrollBanner />
-
-      {/* Gallery Preview Strips */}
-      <div className="space-y-0">
-        <GalleryStrip
-          title="Di Tendenza"
-          subtitle="Gli NFT più popolari in questo momento"
-          items={trendingNFTs}
-          viewAllHref="/gallery"
-          icon="flame"
-        />
-
-        <GalleryStrip
-          title="Più Venduti"
-          subtitle="I bestseller della nostra collezione"
-          items={bestSellingNFTs}
-          viewAllHref="/gallery"
-          icon="trophy"
-        />
-
-        <GalleryStrip
-          title="Nuovi Arrivi"
-          subtitle="Le ultime creazioni appena rilasciate"
-          items={newArrivalsNFTs}
-          viewAllHref="/gallery"
-          icon="sparkles"
-        />
-      </div>
+      <NFTCollectionsSection />
 
       <Slider items={items} />
       <Footer />

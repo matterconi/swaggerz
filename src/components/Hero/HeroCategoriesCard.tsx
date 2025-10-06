@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useRef } from 'react';
-import { Star, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface HeroCategoriesCardProps {
   onHover: () => void;
@@ -10,9 +11,13 @@ interface HeroCategoriesCardProps {
 }
 
 const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeave }) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
-  const [canScrollRight, setCanScrollRight] = React.useState(true);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'start',
+    slidesToScroll: 1,
+  });
+
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(true);
 
   const products = [
     {
@@ -53,37 +58,32 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
     }
   ];
 
-  const updateScrollButtons = React.useCallback(() => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  }, []);
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
 
-  React.useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
 
-    updateScrollButtons();
-    scrollContainer.addEventListener('scroll', updateScrollButtons);
-    window.addEventListener('resize', updateScrollButtons);
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setCanScrollPrev(emblaApi.canScrollPrev());
+    setCanScrollNext(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
 
     return () => {
-      scrollContainer.removeEventListener('scroll', updateScrollButtons);
-      window.removeEventListener('resize', updateScrollButtons);
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
     };
-  }, [updateScrollButtons]);
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 200;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
+  }, [emblaApi, onSelect]);
 
   return (
     <div
@@ -97,9 +97,8 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
         {/* Header */}
         <div className="flex items-center justify-between mb-4 lg:mb-6">
           <div>
-            <h3 className="text-white text-lg lg:text-xl font-bold flex items-center gap-2 mb-1">
-              <Star className="w-6 h-6 text-yellow-500" />
-              Categorie Popolari
+            <h3 className="text-white text-xl lg:text-2xl font-bold mb-1">
+              Abbigliamento
             </h3>
             <p className="text-zinc-400 text-sm hidden lg:block">Scopri i nostri prodotti più venduti</p>
           </div>
@@ -107,15 +106,21 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
           {/* Navigation Buttons */}
           <div className="flex gap-2">
             <button
-              onClick={() => scroll('left')}
-              className="p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30"
+              onClick={scrollPrev}
+              disabled={!canScrollPrev}
+              className={`p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30 ${
+                !canScrollPrev ? 'opacity-40 cursor-not-allowed' : ''
+              }`}
               aria-label="Scorri a sinistra"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
-              onClick={() => scroll('right')}
-              className="p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30"
+              onClick={scrollNext}
+              disabled={!canScrollNext}
+              className={`p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30 ${
+                !canScrollNext ? 'opacity-40 cursor-not-allowed' : ''
+              }`}
               aria-label="Scorri a destra"
             >
               <ChevronRight className="w-5 h-5" />
@@ -125,80 +130,69 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
 
         {/* Products Slider */}
         <div className="relative flex-1 overflow-hidden">
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-4 lg:gap-5 overflow-x-auto scrollbar-hide scroll-smooth h-full pb-2"
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-            }}
-          >
-            {products.map((product, i) => (
-              <div
-                key={i}
-                className="flex-shrink-0 w-[180px] lg:w-[220px] h-full group/cat cursor-pointer"
-              >
-                <div className="relative h-full bg-zinc-800/30 rounded-2xl overflow-hidden hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-800/30 hover:border-zinc-700/50 flex flex-col">
-                  {/* Image - Takes all available space */}
-                  <div className="relative w-full flex-grow overflow-hidden min-h-[200px] md:min-h-[250px] lg:min-h-0">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover/cat:scale-110 transition-transform duration-500"
-                      sizes="(max-width: 1024px) 180px, 220px"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
+          <div className="overflow-hidden h-full" ref={emblaRef}>
+            <div className="flex gap-4 lg:gap-5 h-full pb-2">
+              {products.map((product, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 flex-grow-0 basis-[180px] lg:basis-[220px] h-full group/cat cursor-pointer"
+                >
+                  <div className="relative h-full bg-zinc-800/30 rounded-2xl overflow-hidden hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-800/30 hover:border-zinc-700/50 flex flex-col">
+                    {/* Image - Takes all available space */}
+                    <div className="relative w-full flex-grow overflow-hidden min-h-[200px] md:min-h-[250px] lg:min-h-0">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover group-hover/cat:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 1024px) 180px, 220px"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
 
-                    {/* Hover Overlay with Text */}
-                    <div className="absolute inset-0 bg-black/75 opacity-0 group-hover/cat:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <div className="text-center px-3">
-                        <p className="text-white font-bold text-base lg:text-lg mb-2">{product.name}</p>
-                        <p className="text-zinc-200 text-sm lg:text-base font-medium">{product.price}</p>
+                      {/* Hover Overlay with Text */}
+                      <div className="absolute inset-0 bg-black/75 opacity-0 group-hover/cat:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <div className="text-center px-3">
+                          <p className="text-white font-bold text-base lg:text-lg mb-2">{product.name}</p>
+                          <p className="text-zinc-200 text-sm lg:text-base font-medium">{product.price}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Info - Fixed at bottom */}
-                  <div className="flex-shrink-0 p-3 lg:p-4 bg-zinc-900/50">
-                    <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
-                      {product.category}
-                    </p>
-                    <p className="text-sm lg:text-base text-white font-semibold truncate mb-1">
-                      {product.name}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm lg:text-base text-zinc-300 font-medium">{product.price}</p>
-                      <div className="flex items-center gap-1 text-zinc-400 group-hover/cat:text-white transition-all duration-300">
-                        <span className="text-xs font-medium">Scopri</span>
-                        <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/cat:translate-x-0.5 transition-transform duration-300" />
+                    {/* Info - Fixed at bottom */}
+                    <div className="flex-shrink-0 p-3 lg:p-4 bg-zinc-900/50">
+                      <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
+                        {product.category}
+                      </p>
+                      <p className="text-sm lg:text-base text-white font-semibold truncate mb-1">
+                        {product.name}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm lg:text-base text-zinc-300 font-medium">{product.price}</p>
+                        <div className="flex items-center gap-1 text-zinc-400 group-hover/cat:text-white transition-all duration-300">
+                          <span className="text-xs font-medium">Scopri</span>
+                          <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/cat:translate-x-0.5 transition-transform duration-300" />
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Gradient Fade Edges */}
           <div
             className={`absolute left-0 top-0 bottom-0 w-12 lg:w-16 bg-gradient-to-r from-zinc-900 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
-              !canScrollLeft ? "opacity-0" : "opacity-100"
+              !canScrollPrev ? "opacity-0" : "opacity-100"
             }`}
           />
           <div
             className={`absolute right-0 top-0 bottom-0 w-12 lg:w-16 bg-gradient-to-l from-zinc-900 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
-              !canScrollRight ? "opacity-0" : "opacity-100"
+              !canScrollNext ? "opacity-0" : "opacity-100"
             }`}
           />
         </div>
       </div>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 };
