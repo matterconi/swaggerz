@@ -21,40 +21,40 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
 
   const products = [
     {
-      name: 'Classic Tee',
-      category: 'T-Shirt',
+      name: 'Oversized Tee',
+      category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop',
-      price: '29.99€'
+      price: '39.99€'
     },
     {
-      name: 'Urban Hoodie',
-      category: 'Felpe',
+      name: 'Graffiti Hoodie',
+      category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=500&fit=crop',
-      price: '59.99€'
+      price: '79.99€'
     },
     {
-      name: 'Joggers',
-      category: 'Pantaloni',
+      name: 'Cargo Pants',
+      category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=500&fit=crop',
-      price: '49.99€'
+      price: '69.99€'
     },
     {
-      name: 'Winter Jacket',
-      category: 'Giubbotti',
+      name: 'Bomber Jacket',
+      category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=500&fit=crop',
-      price: '89.99€'
+      price: '129.99€'
     },
     {
-      name: 'Graphic Tee',
-      category: 'T-Shirt',
+      name: 'Urban Graphic Tee',
+      category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&h=500&fit=crop',
-      price: '34.99€'
+      price: '44.99€'
     },
     {
-      name: 'Zip Hoodie',
-      category: 'Felpe',
+      name: 'Street Hoodie',
+      category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&h=500&fit=crop',
-      price: '64.99€'
+      price: '84.99€'
     }
   ];
 
@@ -98,9 +98,9 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
         <div className="flex items-center justify-between mb-4 lg:mb-6">
           <div>
             <h3 className="text-white text-xl lg:text-2xl font-bold mb-1">
-              Abbigliamento
+              Streetwear
             </h3>
-            <p className="text-zinc-400 text-sm hidden lg:block">Scopri i nostri prodotti più venduti</p>
+            <p className="text-zinc-400 text-sm hidden lg:block">Stile urbano che definisce la cultura di strada</p>
           </div>
 
           {/* Navigation Buttons */}

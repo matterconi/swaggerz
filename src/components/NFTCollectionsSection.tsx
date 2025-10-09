@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { latestNFTs, trendingNFTs, exclusiveNFTs } from '@/constants/nftCollections';
-import FeaturedCollectionBanner from '@/components/NFTCollections/FeaturedCollectionBanner';
 import UnlockDesignsSection from '@/components/NFTCollections/UnlockDesignsSection';
 import NFTSlider from '@/components/NFTCollections/NFTSlider';
 
@@ -12,10 +11,7 @@ export default function NFTCollectionsSection() {
       {/* Subtle background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/10 via-zinc-950 to-zinc-950" />
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Featured Collection Banner */}
-        <FeaturedCollectionBanner />
-
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
         {/* Unlock Designs Section - Flow Diagram */}
         <UnlockDesignsSection />
       </div>

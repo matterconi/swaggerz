@@ -126,7 +126,7 @@ const CrosshairOverlay: React.FC = () => {
               borderBottomWidth: index >= 2 ? BORDER_WIDTH : '0',
               borderStyle: 'solid',
               borderColor: 'transparent',
-              backgroundImage: shaderDataUrl ? `url(${shaderDataUrl})` : 'linear-gradient(135deg, #ef4444, #f97316, #eab308)',
+              backgroundImage: shaderDataUrl ? `url(${shaderDataUrl})` : 'linear-gradient(135deg, #dc2626, #ef4444, #b91c1c)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundClip: 'border-box',

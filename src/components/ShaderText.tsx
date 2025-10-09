@@ -212,14 +212,14 @@ const ShaderText: React.FC<ShaderTextProps> = ({
           dominantBaseline="middle"
           fontSize={fontSize}
           fontWeight={fontWeight}
-          fontFamily="sans-serif"
+          fontFamily="Jost, sans-serif"
           fill="transparent"
           stroke="none"
           style={{ opacity: 0, pointerEvents: 'none' }}
         >
           {children}
         </text>
-        
+
         {/* Testo visibile con pattern shader applicato */}
         {isReady && (
           <text
@@ -229,7 +229,7 @@ const ShaderText: React.FC<ShaderTextProps> = ({
             dominantBaseline="middle"
             fontSize={fontSize}
             fontWeight={fontWeight}
-            fontFamily="sans-serif"
+            fontFamily="Jost, sans-serif"
             fill="url(#shaderPattern)"
           >
             {children}

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import { vertexShader, darkFragmentShader } from '@/constants/shaders';
 
-interface CircularButtonProps {
+interface RectangularButtonProps {
   text?: string;
   onClick?: () => void;
   buttonRef?: React.RefObject<HTMLButtonElement>;
@@ -12,36 +12,15 @@ interface CircularButtonProps {
   setIsHovered?: (hovered: boolean) => void;
 }
 
-const CircularButton: React.FC<CircularButtonProps> = ({
-  text = "SCOPRI - LA - SWAG - GALLERIA -",
+const RectangularButton: React.FC<RectangularButtonProps> = ({
+  text = "SCOPRI LA GALLERIA",
   onClick,
   buttonRef,
   isHovered = false,
   setIsHovered
 }) => {
-  const size = 140;
-  const center = size / 2;
-  const textRadius = 44;
-  
-  // Calcola la spaziatura ottimale per riempire il cerchio
-  const circumference = 2 * Math.PI * textRadius;
-  const targetCoverage = 0.90; // Copri il 90% del perimetro
-  
-  // Separa parole e calcola spazio necessario per le lettere
-  const words = text.split(' ');
-  const totalChars = text.replace(/\s/g, '').length; // Conta solo le lettere
-  const numSpaces = words.length; // Numero di spazi totali (circolare)
-  
-  // Stima larghezza base: ~9px per lettera + letter-spacing
-  const baseCharWidth = 9.8;
-  const totalCharWidth = totalChars * baseCharWidth;
-  
-  // Calcola word-spacing in px
-  const availableForSpaces = (circumference * targetCoverage) - totalCharWidth;
-  const wordSpacingPx = numSpaces > 0 ? availableForSpaces / numSpaces : 0;
-  
-  // Aggiungi spazio dopo l'ultima parola per chiudere il cerchio
-  const textWithTrailingSpace = text + ' ';
+  const width = 240;
+  const height = 64;
 
   // Shader background refs
   const shaderCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -72,7 +51,7 @@ const CircularButton: React.FC<CircularButtonProps> = ({
       antialias: true
     });
 
-    renderer.setSize(size, size);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
 
@@ -124,14 +103,14 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         material.dispose();
       }
     };
-  }, [size]);
+  }, [width, height]);
 
   return (
     <div
       className="relative"
       style={{
-        width: size,
-        height: size,
+        width,
+        height,
       }}
     >
       {/* Canvas nascosto per generare lo shader */}
@@ -141,19 +120,19 @@ const CircularButton: React.FC<CircularButtonProps> = ({
           display: 'none',
           position: 'absolute'
         }}
-        width={size}
-        height={size}
+        width={width}
+        height={height}
       />
 
-      {/* Anello di glow esterno per transizione morbida */}
+      {/* Glow esterno per transizione morbida */}
       <motion.div
-        className="absolute rounded-full pointer-events-none"
+        className="absolute rounded-2xl pointer-events-none"
         style={{
-          width: size + 40,
-          height: size + 40,
+          width: width + 40,
+          height: height + 40,
           left: -20,
           top: -20,
-          backgroundImage: `radial-gradient(circle,
+          backgroundImage: `radial-gradient(ellipse,
             rgba(249, 115, 22, 0.3) 0%,
             rgba(239, 68, 68, 0.2) 40%,
             rgba(234, 179, 8, 0.1) 60%,
@@ -170,10 +149,10 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         onClick={onClick}
         onMouseEnter={() => setIsHovered?.(true)}
         onMouseLeave={() => setIsHovered?.(false)}
-        className="absolute group/btn focus:outline-none rounded-full p-0 overflow-hidden cursor-pointer"
+        className="absolute group/btn focus:outline-none rounded-2xl overflow-hidden cursor-pointer flex items-center justify-center gap-3 px-6"
         style={{
-          width: size,
-          height: size,
+          width,
+          height,
           left: 0,
           top: 0,
           backgroundImage: shaderDataUrl
@@ -198,61 +177,16 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
-        {/* Testo rotante con SVG textPath */}
-        <svg
-          className="absolute inset-0 w-full h-full"
-          viewBox={`0 0 ${size} ${size}`}
-          style={{ overflow: 'visible', pointerEvents: 'none' }}
-        >
-          <defs>
-            <path
-              id="textCircle"
-              d={`
-                M ${center}, ${center}
-                m -${textRadius}, 0
-                a ${textRadius},${textRadius} 0 1,1 ${textRadius * 2},0
-                a ${textRadius},${textRadius} 0 1,1 -${textRadius * 2},0
-              `}
-              fill="none"
-            />
-          </defs>
-          
-          <g>
-            <animateTransform
-              attributeName="transform"
-              attributeType="XML"
-              type="rotate"
-              from={`0 ${center} ${center}`}
-              to={`360 ${center} ${center}`}
-              dur="10s"
-              repeatCount="indefinite"
-            />
-            <text
-              className="text-[14px] font-bold uppercase fill-white"
-              style={{ 
-                letterSpacing: '0.05em',
-                wordSpacing: `${Math.max(0, wordSpacingPx)}px`,
-                fontWeight: 700
-              }}
-            >
-              <textPath
-                href="#textCircle"
-                startOffset="0%"
-                textAnchor="start"
-              >
-                {textWithTrailingSpace} 
-              </textPath>
-            </text>
-          </g>
-        </svg>
+        {/* Testo del button */}
+        <span className="text-white font-bold text-sm tracking-wider uppercase">
+          {text}
+        </span>
 
-        {/* Cerchio centrale con freccia statica */}
-        <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-transparent flex items-center justify-center">
-          <ArrowRight className="size-12 text-white font-bold" style={{ rotate: '-45deg' }} />
-        </div>
+        {/* Freccia */}
+        <ArrowRight className="size-5 text-white" />
       </motion.button>
     </div>
   );
 };
 
-export default CircularButton;
+export default RectangularButton;

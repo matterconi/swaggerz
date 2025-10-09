@@ -77,9 +77,8 @@ const HeroDropCard: React.FC<HeroDropCardProps> = ({
         className="relative w-full h-full group"
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <div className="absolute -top-1 -right-1 z-50">
+        {/* Badge unificato DROP SALE */}
         <LatestDropsBadge />
-      </div>
         {/* Contenitore immagine */}
         <motion.div
           className="relative w-full h-full rounded-3xl shadow-2xl shadow-black/50 z-20 overflow-hidden border border-zinc-800/50 transition-colors duration-500 bg-zinc-950"
