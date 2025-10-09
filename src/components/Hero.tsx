@@ -86,12 +86,17 @@ const BentoHero = () => {
             />
           </div>
 
-          {/* Banner Section 1: 2 columns × 3 rows (left side of L) */}
+          {/* Banner Section 1: 2 columns × 3 rows (Z shape top) */}
           <div className="col-span-2 lg:col-span-2 xl:col-span-2 xl:row-span-3
-  xl:border-t xl:border-l xl:border-b xl:border-zinc-700/50
-  xl:rounded-t-3xl xl:rounded-bl-3xl xl:overflow-visible xl:relative
+   xl:border-l xl:border-b xl:border-zinc-700/50
+  xl:rounded-l-3xl xl:overflow-visible xl:relative
 
-  after:xl:content-[''] after:xl:absolute after:xl:w-5 after:xl:h-[200px]
+  before:xl:content-[''] before:xl:absolute before:xl:w-[calc(100%-1px)] before:xl:h-[20px]
+  before:xl:border-r before:xl:border-t before:xl:border-zinc-700/50
+  before:xl:rounded-t-3xl before:xl:-top-[0] before:xl:right-[0px] before:xl:z-10
+  before:xl:bg-transparent
+
+  after:xl:content-[''] after:xl:absolute after:xl:w-5 after:xl:h-[201px]
   after:xl:border-l after:xl:border-b after:xl:border-zinc-700/50
   after:xl:rounded-bl-3xl after:xl:-right-[19px] after:xl:top-[20px] after:xl:z-10
   after:xl:bg-transparent"

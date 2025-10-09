@@ -1,11 +1,16 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
 import ShaderText from '@/components/ShaderText';
 import useEmblaCarousel from 'embla-carousel-react';
+import AnimatedGradientOrb from './AnimatedGradientOrb';
+import CollectionBadge from './CollectionBadge';
+import CollectionStats from './CollectionStats';
+import ShopButton from './ShopButton';
+import ImageGrid from './ImageGrid';
+import NavigationButton from './NavigationButton';
+import DotsIndicator from './DotsIndicator';
 
 // Dati delle collezioni
 const collections = [
@@ -145,22 +150,13 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
       >
-        {/* Animated gradient orbs */}
-        <motion.div
-          className={`absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-${collection.gradientFrom} via-${collection.gradientVia} to-transparent rounded-full blur-3xl`}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.6, 0.8, 0.6]
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
+        <AnimatedGradientOrb
+          position="top-right"
+          gradientFrom={collection.gradientFrom}
+          gradientVia={collection.gradientVia}
         />
 
         <div className="relative h-full px-4 sm:px-6 lg:px-8 py-8 flex flex-col justify-center">
-
           <motion.div
             className="mb-6"
             initial={{ opacity: 0, y: 10 }}
@@ -171,42 +167,22 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
               {collection.title}
             </h2>
-             <motion.p
-            className="text-lg text-zinc-300 mb-6 leading-relaxed"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-          >
-            {collection.description}
-          </motion.p>
+            <motion.p
+              className="text-lg text-zinc-300 mb-6 leading-relaxed"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+            >
+              {collection.description}
+            </motion.p>
           </motion.div>
-           <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-3 h-full"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-          >
-            {collection.images.map((image, index) => (
-              <motion.div
-                key={index}
-                className="relative rounded-2xl overflow-hidden group border border-zinc-800"
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: 0.25 + index * 0.05 }}
-              >
-                <Image
-                  src={image}
-                  alt={`${collection.title} Product ${index + 1}`}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </motion.div>
-            ))}
-          </motion.div>
+
+          <ImageGrid
+            images={collection.images}
+            title={collection.title}
+            columns={4}
+          />
         </div>
       </motion.div>
     );
@@ -223,64 +199,32 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
         transition={{ duration: 0.8 }}
       >
         <div className="relative h-full px-4 sm:px-6 lg:px-8 py-8">
+          <CollectionStats
+            price={collection.price}
+            pieces={collection.pieces}
+            nftLabel={collection.nftLabel}
+            badgeColor={collection.badgeColor}
+            size="small"
+          />
 
           <motion.div
-            className="flex flex-wrap items-center gap-6 mb-6"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.35 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="mt-6"
           >
-            <div>
-              <p className="text-sm text-zinc-400 mb-1">A partire da</p>
-              <p className="text-2xl font-bold text-white">{collection.price}</p>
-            </div>
-            <div className="w-px h-12 bg-zinc-700" />
-            <div>
-              <p className="text-sm text-zinc-400 mb-1">Pezzi</p>
-              <p className="text-2xl font-bold text-white">{collection.pieces}</p>
-            </div>
-            <div className="w-px h-12 bg-zinc-700" />
-            <div>
-              <p className="text-sm text-zinc-400 mb-1">Limited Edition</p>
-              <p className={`text-2xl font-bold text-${collection.badgeColor}-400`}>{collection.nftLabel}</p>
-            </div>
+            <ShopButton
+              badgeColor={collection.badgeColor}
+              buttonGradient={collection.buttonGradient}
+              buttonHoverColor={collection.buttonHoverColor}
+              href={collection.href}
+            />
           </motion.div>
-
-          <motion.button
-            className={`relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-${collection.badgeColor}-500/40 focus:ring-offset-2 focus:ring-offset-zinc-950 w-fit`}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => window.location.href = collection.href}
-          >
-            <span className={`absolute inset-[-1000%] animate-[spin_2s_linear_infinite] ${collection.buttonGradient}`} />
-            <motion.span
-              className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full px-8 py-1 backdrop-blur-3xl overflow-hidden relative bg-zinc-950"
-              whileHover={{ backgroundColor: collection.buttonHoverColor }}
-              transition={{ duration: 0.3 }}
-            >
-              <span className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                Shop Now
-                <ChevronRight className="w-4 h-4" />
-              </span>
-            </motion.span>
-          </motion.button>
         </div>
 
-        {/* Navigation Buttons */}
-        <button
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 flex items-center justify-center text-white hover:bg-zinc-800/80 transition-all"
-          onClick={scrollPrev}
-          aria-label="Previous collection"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 flex items-center justify-center text-white hover:bg-zinc-800/80 transition-all"
-          onClick={scrollNext}
-          aria-label="Next collection"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
+        <NavigationButton direction="prev" onClick={scrollPrev} size="small" />
+        <NavigationButton direction="next" onClick={scrollNext} size="small" />
       </motion.div>
     );
   }
@@ -299,46 +243,23 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
               >
-                {/* Animated gradient orbs */}
-                <motion.div
-                  className={`absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-${collection.gradientFrom} via-${collection.gradientVia} to-transparent rounded-full blur-3xl`}
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.6, 0.8, 0.6]
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
+                <AnimatedGradientOrb
+                  position="top-right"
+                  gradientFrom={collection.gradientFrom}
+                  gradientVia={collection.gradientVia}
                 />
 
-                <motion.div
-                  className={`absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-${collection.gradientFrom} via-${collection.gradientVia} to-transparent rounded-full blur-3xl`}
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [0.6, 0.8, 0.6]
-                  }}
-                  transition={{
-                    duration: 6,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1
-                  }}
+                <AnimatedGradientOrb
+                  position="bottom-left"
+                  gradientFrom={collection.gradientFrom}
+                  gradientVia={collection.gradientVia}
+                  delay={1}
                 />
 
-                {/* Center accent glow */}
-                <motion.div
-                  className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br ${collection.accentGradient} rounded-full blur-3xl`}
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.4, 0.6, 0.4]
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
+                <AnimatedGradientOrb
+                  position="center"
+                  gradientFrom={collection.accentGradient}
+                  gradientVia={collection.accentGradient}
                 />
 
                 {/* Content */}
@@ -352,17 +273,10 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
                       viewport={{ once: true, margin: "-100px" }}
                       transition={{ duration: 0.5, delay: 0.1 }}
                     >
-                      <motion.div
-                        className={`inline-block px-4 py-2 bg-${collection.badgeColor}-500/20 backdrop-blur-sm border border-${collection.badgeColor}-500/50 rounded-full mb-6`}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: 0.2 }}
-                      >
-                        <span className={`text-${collection.badgeColor}-300 text-sm font-semibold uppercase tracking-wider`}>
-                          {collection.badge}
-                        </span>
-                      </motion.div>
+                      <CollectionBadge
+                        badge={collection.badge}
+                        badgeColor={collection.badgeColor}
+                      />
 
                       <motion.div
                         className="mb-6"
@@ -389,28 +303,14 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
                         {collection.description}
                       </motion.p>
 
-                      <motion.div
-                        className="flex flex-wrap items-center gap-6 mb-8"
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: 0.35 }}
-                      >
-                        <div>
-                          <p className="text-sm text-zinc-400 mb-1">A partire da</p>
-                          <p className="text-3xl font-bold text-white">{collection.price}</p>
-                        </div>
-                        <div className="w-px h-12 bg-zinc-700" />
-                        <div>
-                          <p className="text-sm text-zinc-400 mb-1">Pezzi</p>
-                          <p className="text-3xl font-bold text-white">{collection.pieces}</p>
-                        </div>
-                        <div className="w-px h-12 bg-zinc-700" />
-                        <div>
-                          <p className="text-sm text-zinc-400 mb-1">Limited Edition</p>
-                          <p className={`text-3xl font-bold text-${collection.badgeColor}-400`}>{collection.nftLabel}</p>
-                        </div>
-                      </motion.div>
+                      <div className="mb-8">
+                        <CollectionStats
+                          price={collection.price}
+                          pieces={collection.pieces}
+                          nftLabel={collection.nftLabel}
+                          badgeColor={collection.badgeColor}
+                        />
+                      </div>
 
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -418,58 +318,20 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.4 }}
                       >
-                        <motion.button
-                          className={`relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-${collection.badgeColor}-500/40 focus:ring-offset-2 focus:ring-offset-zinc-950`}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => window.location.href = collection.href}
-                        >
-                          {/* Animated rotating gradient border */}
-                          <span className={`absolute inset-[-1000%] animate-[spin_2s_linear_infinite] ${collection.buttonGradient}`} />
-
-                          {/* Button content */}
-                          <motion.span
-                            className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full px-8 py-1 backdrop-blur-3xl overflow-hidden relative bg-zinc-950"
-                            whileHover={{ backgroundColor: collection.buttonHoverColor }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <span className="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-2">
-                              Shop Now
-                              <ChevronRight className="w-4 h-4" />
-                            </span>
-                          </motion.span>
-                        </motion.button>
+                        <ShopButton
+                          badgeColor={collection.badgeColor}
+                          buttonGradient={collection.buttonGradient}
+                          buttonHoverColor={collection.buttonHoverColor}
+                          href={collection.href}
+                        />
                       </motion.div>
                     </motion.div>
 
                     {/* Right Image Grid */}
-                    <motion.div
-                      className="grid grid-cols-2 gap-3 h-full"
-                      initial={{ opacity: 0, x: 30 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ duration: 0.5, delay: 0.15 }}
-                    >
-                      {collection.images.slice(0, 4).map((image, index) => (
-                        <motion.div
-                          key={index}
-                          className={`relative rounded-2xl overflow-hidden group border border-zinc-800 ${
-                            index < 2 ? 'row-span-1' : 'row-span-1'
-                          }`}
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.4, delay: 0.25 + index * 0.05 }}
-                        >
-                          <Image
-                            src={image}
-                            alt={`${collection.title} Product ${index + 1}`}
-                            fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </motion.div>
-                      ))}
-                    </motion.div>
+                    <ImageGrid
+                      images={collection.images.slice(0, 4)}
+                      title={collection.title}
+                    />
                   </div>
                 </div>
               </motion.div>
@@ -478,35 +340,14 @@ export default function FeaturedCollectionBanner({ section = 'full' }: FeaturedC
         </div>
       </div>
 
-      {/* Navigation Buttons */}
-      <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 flex items-center justify-center text-white hover:bg-zinc-800/80 transition-all"
-        onClick={scrollPrev}
-        aria-label="Previous collection"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-      <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-zinc-900/80 backdrop-blur-sm border border-zinc-700/50 flex items-center justify-center text-white hover:bg-zinc-800/80 transition-all"
-        onClick={scrollNext}
-        aria-label="Next collection"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
+      <NavigationButton direction="prev" onClick={scrollPrev} />
+      <NavigationButton direction="next" onClick={scrollNext} />
 
-      {/* Dots Indicator */}
-      <div className="flex justify-center gap-2 mt-4">
-        {collections.map((_, index) => (
-          <button
-            key={index}
-            className={`w-2 h-2 rounded-full transition-all ${
-              index === selectedIndex ? 'bg-white w-8' : 'bg-zinc-600'
-            }`}
-            onClick={() => emblaApi?.scrollTo(index)}
-            aria-label={`Go to collection ${index + 1}`}
-          />
-        ))}
-      </div>
+      <DotsIndicator
+        totalDots={collections.length}
+        selectedIndex={selectedIndex}
+        onDotClick={(index) => emblaApi?.scrollTo(index)}
+      />
     </div>
   );
 }
