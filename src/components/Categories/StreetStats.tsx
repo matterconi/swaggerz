@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { VideoStats } from '@/types/video.types';
 import {
   ShirtIcon,
   LayersIcon,
@@ -15,7 +14,7 @@ import {
 } from 'lucide-react';
 
 interface StreetStatsProps {
-  stats: VideoStats;
+  stats: Record<string, string>;
   isActive: boolean;
   index: number;
 }

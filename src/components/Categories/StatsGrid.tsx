@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { VideoStats } from '@/types/video.types';
+import { VideoStat } from '@/types/video.types';
 
 interface StatsGridProps {
-  stats: VideoStats;
+  stats: VideoStat[];
   isActive: boolean;
   variants?: any;
 }
@@ -20,9 +20,9 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
       variants={variants}
       className="grid grid-cols-2 gap-6 py-8"
     >
-      {Object.entries(stats).map(([key, value], idx) => (
+      {stats.map((stat, idx) => (
         <motion.div
-          key={key}
+          key={stat.label}
           className="text-left"
           initial={{ opacity: 0, x: -20 }}
           animate={{
@@ -36,10 +36,10 @@ export const StatsGrid: React.FC<StatsGridProps> = ({
           }}
         >
           <div className="text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-1">
-            {value}
+            {stat.value}
           </div>
           <div className="text-xs lg:text-sm text-zinc-500 uppercase tracking-wider">
-            {key}
+            {stat.label}
           </div>
         </motion.div>
       ))}

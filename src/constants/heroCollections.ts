@@ -6,6 +6,12 @@ export interface Collection {
   description: string;
   price: string;
   category: string;
+  stats: {
+    items: number;
+    floorPrice: string;
+    volume24h: string;
+    owners: number;
+  };
 }
 
 export const collections: Collection[] = [
@@ -16,7 +22,13 @@ export const collections: Collection[] = [
     badge: "ULTIMO DROP",
     description: "Streetwear che brucia le strade con energia pura",
     price: "€89 - €159",
-    category: "STREETWEAR"
+    category: "STREETWEAR",
+    stats: {
+      items: 250,
+      floorPrice: "€89",
+      volume24h: "€12.5K",
+      owners: 183
+    }
   },
   {
     id: 2,
@@ -25,7 +37,13 @@ export const collections: Collection[] = [
     badge: "LIMITED EDITION",
     description: "Fusione perfetta tra tecnologia e moda urbana",
     price: "€99 - €179",
-    category: "TECH WEAR"
+    category: "TECH WEAR",
+    stats: {
+      items: 150,
+      floorPrice: "€99",
+      volume24h: "€18.2K",
+      owners: 127
+    }
   },
   {
     id: 3,
@@ -34,6 +52,12 @@ export const collections: Collection[] = [
     badge: "RETRO VIBES",
     description: "Classico rivisitato con stile contemporaneo",
     price: "€79 - €149",
-    category: "VINTAGE"
+    category: "VINTAGE",
+    stats: {
+      items: 300,
+      floorPrice: "€79",
+      volume24h: "€9.8K",
+      owners: 241
+    }
   }
 ];
