@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 
@@ -24,37 +24,31 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
       name: 'Oversized Tee',
       category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=500&fit=crop',
-      price: '39.99€'
     },
     {
       name: 'Graffiti Hoodie',
       category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400&h=500&fit=crop',
-      price: '79.99€'
     },
     {
       name: 'Cargo Pants',
       category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400&h=500&fit=crop',
-      price: '69.99€'
     },
     {
       name: 'Bomber Jacket',
       category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=500&fit=crop',
-      price: '129.99€'
     },
     {
       name: 'Urban Graphic Tee',
       category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&h=500&fit=crop',
-      price: '44.99€'
     },
     {
       name: 'Street Hoodie',
       category: 'Streetwear',
       image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=400&h=500&fit=crop',
-      price: '84.99€'
     }
   ];
 
@@ -87,20 +81,33 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
 
   return (
     <div
-      className="group relative bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-3xl p-4 lg:p-6 border border-zinc-800/50 overflow-hidden hover:border-zinc-700/50 transition-all duration-500 h-full"
+      className="group relative rounded-3xl p-5 lg:p-7 overflow-hidden h-full bg-gradient-to-br from-violet-600 via-fuchsia-600 to-orange-500"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 via-transparent to-yellow-500/20 animate-pulse" />
+      
+      {/* Noise texture */}
+      <div className="absolute inset-0 opacity-10 mix-blend-overlay" 
+           style={{
+             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
+           }}
+      />
 
       <div className="relative h-full flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 lg:mb-6">
+        <div className="flex items-center justify-between mb-5 lg:mb-7">
           <div>
-            <h3 className="text-white text-xl lg:text-2xl font-bold mb-1">
-              Streetwear
-            </h3>
-            <p className="text-zinc-400 text-sm hidden lg:block">Stile urbano che definisce la cultura di strada</p>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-6 h-6 text-white animate-pulse" />
+              <h3 className="text-white text-2xl lg:text-3xl font-black tracking-tight">
+                STREETWEAR
+              </h3>
+            </div>
+            <p className="text-white/90 text-sm lg:text-base font-medium hidden lg:block">
+              Cultura urbana, stile senza limiti
+            </p>
           </div>
 
           {/* Navigation Buttons */}
@@ -108,8 +115,8 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
             <button
               onClick={scrollPrev}
               disabled={!canScrollPrev}
-              className={`p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30 ${
-                !canScrollPrev ? 'opacity-40 cursor-not-allowed' : ''
+              className={`p-2.5 lg:p-3 rounded-2xl bg-white/20 backdrop-blur-sm text-white transition-all duration-300 border-2 border-white/30 hover:bg-white/30 hover:scale-110 ${
+                !canScrollPrev ? 'opacity-30 cursor-not-allowed' : ''
               }`}
               aria-label="Scorri a sinistra"
             >
@@ -118,8 +125,8 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
             <button
               onClick={scrollNext}
               disabled={!canScrollNext}
-              className={`p-2 lg:p-2.5 rounded-xl bg-zinc-800/50 hover:bg-zinc-700/50 text-zinc-400 hover:text-white transition-all duration-300 border border-zinc-700/30 ${
-                !canScrollNext ? 'opacity-40 cursor-not-allowed' : ''
+              className={`p-2.5 lg:p-3 rounded-2xl bg-white/20 backdrop-blur-sm text-white transition-all duration-300 border-2 border-white/30 hover:bg-white/30 hover:scale-110 ${
+                !canScrollNext ? 'opacity-30 cursor-not-allowed' : ''
               }`}
               aria-label="Scorri a destra"
             >
@@ -135,44 +142,39 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
               {products.map((product, i) => (
                 <div
                   key={i}
-                  className="flex-shrink-0 flex-grow-0 basis-[180px] lg:basis-[220px] h-full group/cat cursor-pointer"
+                  className="flex-shrink-0 flex-grow-0 basis-[200px] lg:basis-[240px] h-full group/cat cursor-pointer"
                 >
-                  <div className="relative h-full bg-zinc-800/30 rounded-2xl overflow-hidden hover:bg-zinc-800/50 transition-all duration-300 border border-zinc-800/30 hover:border-zinc-700/50 flex flex-col">
-                    {/* Image - Takes all available space */}
-                    <div className="relative w-full flex-grow overflow-hidden min-h-[200px] md:min-h-[250px] lg:min-h-0">
+                  <div className="relative h-full rounded-2xl overflow-hidden transition-all duration-500 group-hover/cat:scale-105 group-hover/cat:rotate-1">
+                    {/* Image */}
+                    <div className="relative w-full h-full">
                       <Image
                         src={product.image}
                         alt={product.name}
                         fill
-                        className="object-cover group-hover/cat:scale-110 transition-transform duration-500"
-                        sizes="(max-width: 1024px) 180px, 220px"
+                        className="object-cover"
+                        sizes="(max-width: 1024px) 200px, 240px"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/90 via-zinc-900/20 to-transparent" />
+                      
+                      {/* Gradient overlay - always visible */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                      {/* Hover Overlay with Text */}
-                      <div className="absolute inset-0 bg-black/75 opacity-0 group-hover/cat:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <div className="text-center px-3">
-                          <p className="text-white font-bold text-base lg:text-lg mb-2">{product.name}</p>
-                          <p className="text-zinc-200 text-sm lg:text-base font-medium">{product.price}</p>
+                      {/* Content overlay */}
+                      <div className="absolute inset-0 flex flex-col justify-end p-4 lg:p-5">
+                        <div className="transform transition-all duration-300 translate-y-0">
+                          <div className="inline-block px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 mb-3">
+                            <p className="text-xs text-white font-bold uppercase tracking-widest">
+                              {product.category}
+                            </p>
+                          </div>
+                          <h4 className="text-white text-lg lg:text-xl font-black mb-2 leading-tight">
+                            {product.name}
+                          </h4>
+                          <div className="h-0.5 w-12 bg-gradient-to-r from-white to-transparent rounded-full" />
                         </div>
                       </div>
-                    </div>
 
-                    {/* Info - Fixed at bottom */}
-                    <div className="flex-shrink-0 p-3 lg:p-4 bg-zinc-900/50">
-                      <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
-                        {product.category}
-                      </p>
-                      <p className="text-sm lg:text-base text-white font-semibold truncate mb-1">
-                        {product.name}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm lg:text-base text-zinc-300 font-medium">{product.price}</p>
-                        <div className="flex items-center gap-1 text-zinc-400 group-hover/cat:text-white transition-all duration-300">
-                          <span className="text-xs font-medium">Scopri</span>
-                          <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4 group-hover/cat:translate-x-0.5 transition-transform duration-300" />
-                        </div>
-                      </div>
+                      {/* Shine effect on hover */}
+                      <div className="absolute inset-0 opacity-0 group-hover/cat:opacity-100 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white/20 to-transparent" />
                     </div>
                   </div>
                 </div>
@@ -182,12 +184,12 @@ const HeroCategoriesCard: React.FC<HeroCategoriesCardProps> = ({ onHover, onLeav
 
           {/* Gradient Fade Edges */}
           <div
-            className={`absolute left-0 top-0 bottom-0 w-12 lg:w-16 bg-gradient-to-r from-zinc-900 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
+            className={`absolute left-0 top-0 bottom-0 w-16 lg:w-20 bg-gradient-to-r from-fuchsia-600 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
               !canScrollPrev ? "opacity-0" : "opacity-100"
             }`}
           />
           <div
-            className={`absolute right-0 top-0 bottom-0 w-12 lg:w-16 bg-gradient-to-l from-zinc-900 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
+            className={`absolute right-0 top-0 bottom-0 w-16 lg:w-20 bg-gradient-to-l from-orange-500 to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
               !canScrollNext ? "opacity-0" : "opacity-100"
             }`}
           />

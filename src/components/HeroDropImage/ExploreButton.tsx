@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
 
 interface ExploreButtonProps {
-  collectionName: string;
-  isHovered: boolean;
-  onHoverChange: (hovered: boolean) => void;
+  collectionName?: string;
+  isHovered?: boolean;
+  onHoverChange?: (hovered: boolean) => void;
 }
 
 const ExploreButton: React.FC<ExploreButtonProps> = ({
   collectionName,
   isHovered,
-  onHoverChange
+  onHoverChange = () => {}
 }) => {
   return (
     <motion.button

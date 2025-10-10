@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ExploreButton from './ExploreButton';
 import DropStats from './DropStats';
+import DropGallery from './DropGallery';
 
 interface Collection {
   name: string;
@@ -14,6 +15,7 @@ interface Collection {
     volume24h: string;
     owners: number;
   };
+  gallery?: string[];
 }
 
 interface CollectionInfoMobileProps {
@@ -34,6 +36,13 @@ const CollectionInfoMobile: React.FC<CollectionInfoMobileProps> = ({
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, delay: 0.3, ease: [0.23, 1, 0.320, 1] }}
     >
+      {/* Gallery - solo su tablet/mobile landscape */}
+      {collection.gallery && collection.gallery.length > 0 && (
+        <div className="hidden md:block">
+          <DropGallery gallery={collection.gallery} collectionName={collection.name} />
+        </div>
+      )}
+
       {/* Statistiche */}
       <div className="flex justify-center">
         <DropStats stats={collection.stats} variant="mobile" />

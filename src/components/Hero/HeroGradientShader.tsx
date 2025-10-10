@@ -102,7 +102,7 @@ const HeroGradientShader: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute top-32 left-0 lg:left-8 xl:left-16 w-[700px] lg:w-[900px] h-[700px] lg:h-[900px]"
+      className="absolute top-32 left-0 lg:left-8 xl:left-16 w-[700px] lg:w-[900px] h-[700px] lg:h-[900px] z-20"
       style={{
         filter: 'blur(120px)',
         mixBlendMode: 'screen'

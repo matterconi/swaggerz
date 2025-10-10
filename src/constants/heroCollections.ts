@@ -12,6 +12,7 @@ export interface Collection {
     volume24h: string;
     owners: number;
   };
+  gallery?: string[];
 }
 
 export const collections: Collection[] = [
@@ -28,7 +29,12 @@ export const collections: Collection[] = [
       floorPrice: "€89",
       volume24h: "€12.5K",
       owners: 183
-    }
+    },
+    gallery: [
+      "/rebkon-hero-image.jpeg",
+      "/DigitalArtDrop.webp",
+      "/VintageDrop.webp"
+    ]
   },
   {
     id: 2,
@@ -43,7 +49,12 @@ export const collections: Collection[] = [
       floorPrice: "€99",
       volume24h: "€18.2K",
       owners: 127
-    }
+    },
+    gallery: [
+      "/DigitalArtDrop.webp",
+      "/VintageDrop.webp",
+      "/rebkon-hero-image.jpeg"
+    ]
   },
   {
     id: 3,
@@ -58,6 +69,11 @@ export const collections: Collection[] = [
       floorPrice: "€79",
       volume24h: "€9.8K",
       owners: 241
-    }
+    },
+    gallery: [
+      "/VintageDrop.webp",
+      "/rebkon-hero-image.jpeg",
+      "/DigitalArtDrop.webp"
+    ]
   }
 ];

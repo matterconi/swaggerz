@@ -14,7 +14,7 @@ export default function CollectionBadge({ badge, badgeColor }: CollectionBadgePr
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: 0.2 }}
     >
-      <span className={`text-${badgeColor}-300 text-sm font-semibold uppercase tracking-wider`}>
+      <span className={`text-white text-sm font-semibold uppercase tracking-wider`}>
         {badge}
       </span>
     </motion.div>

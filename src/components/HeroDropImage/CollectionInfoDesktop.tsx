@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ExploreButton from './ExploreButton';
 import DropStats from './DropStats';
+import DropGallery from './DropGallery';
 
 interface Collection {
   name: string;
@@ -13,6 +14,7 @@ interface Collection {
     volume24h: string;
     owners: number;
   };
+  gallery?: string[];
 }
 
 interface CollectionInfoDesktopProps {
@@ -28,17 +30,22 @@ const CollectionInfoDesktop: React.FC<CollectionInfoDesktopProps> = ({
 }) => {
   return (
     <motion.div
-      className="hidden lg:flex flex-col gap-4"
+      className="hidden lg:flex flex-col gap-5"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, delay: 0.3, ease: [0.23, 1, 0.320, 1] }}
     >
-      {/* Riga superiore: Statistiche */}
+      {/* Gallery */}
+      {collection.gallery && collection.gallery.length > 0 && (
+        <DropGallery gallery={collection.gallery} collectionName={collection.name} />
+      )}
+
+      {/* Statistiche */}
       <div className="flex justify-center">
         <DropStats stats={collection.stats} variant="desktop" />
       </div>
 
-      {/* Riga inferiore: Info collezione */}
+      {/* Info collezione */}
       <div className="flex items-end justify-between gap-8">
         {/* Colonna sinistra: Titolo e Autore */}
         <motion.div

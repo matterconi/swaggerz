@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { collections } from '@/constants/heroCollections';
 import HeroDropCard from './HeroDropImage/HeroDropCard';
 import HeroMainCard from './Hero/HeroMainCard';
-import HeroCategoriesCard from './Hero/HeroCategoriesCard';
 import HeroGradientShader from './Hero/HeroGradientShader';
 import FeaturedCollectionBanner from './NFTCollections/FeaturedCollectionBanner';
 
@@ -40,9 +39,9 @@ const BentoHero = () => {
 
 
   return (
-    <section className="relative bg-zinc-950 font-jost pt-16 lg:pt-20 overflow-hidden">
+     <section className="relative bg-zinc-950 font-jost pt-16 lg:pt-20 min-h-screen overflow-hidden">
       {/* Animated background gradients */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-20">
         <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
 
@@ -50,21 +49,21 @@ const BentoHero = () => {
         <HeroGradientShader />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <div className="relative z-50 container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Unified Bento Grid - Everything in one grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto xl:auto-rows-[200px]">
+        <div className="relative grid grid-cols-2  lg:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto lg:auto-rows-[200px] z-50">
 
-          {/* Main Title & CTA */}
-          <div className="col-span-2 lg:col-span-1 lg:row-span-3 xl:col-span-2 xl:row-span-3">
+          {/* Main Title & CTA - Extended to 4 rows */}
+          <div className="col-span-2 lg:col-span-2 lg:row-span-4">
             <HeroMainCard
               onHover={() => setHoveredCard('main')}
               onLeave={() => setHoveredCard(null)}
             />
           </div>
 
-          {/* HeroDropCard */}
+          {/* HeroDropCard - Extended to 4 rows */}
           <div
-            className="col-span-2 lg:col-span-1 lg:row-span-2 xl:col-span-2 xl:row-span-2 overflow-hidden min-h-[400px] xl:min-h-0"
+            className="col-span-2 lg:col-span-2 lg:row-span-4 overflow-hidden min-h-[400px] lg:min-h-0"
             onMouseEnter={() => setHoveredCard('drops')}
             onMouseLeave={() => {
               setHoveredCard(null);
@@ -78,39 +77,80 @@ const BentoHero = () => {
             />
           </div>
 
-          {/* Streetwear Card - extends down for 2 rows */}
-          <div className="col-span-2 lg:col-span-1 lg:row-span-1 xl:col-span-2 xl:row-span-2">
-            <HeroCategoriesCard
-              onHover={() => setHoveredCard('categories')}
-              onLeave={() => setHoveredCard(null)}
+          {/* Banner Section 1 - Extended to 4 rows */}
+         <div className="relative bg-black col-span-2 lg:col-span-2 lg:row-span-4
+            lg:border-l lg:border-b lg:border-zinc-700/50
+            lg:rounded-l-3xl rounded-tr-3xl lg:overflow-visible
+
+            before:lg:content-[''] before:lg:absolute before:lg:w-[calc(100%-1px)] before:lg:h-[20px]
+            before:lg:border-r before:lg:border-t before:lg:border-zinc-700/50
+            before:lg:rounded-t-3xl before:lg:-top-[0] before:lg:-right-0
+            before:lg:z-10
+
+            after:lg:content-[''] after:lg:absolute after:lg:w-[21px] after:lg:h-[201px]
+            after:lg:border-l after:lg:border-b after:lg:border-zinc-700/50
+            after:lg:rounded-bl-3xl after:lg:-right-[20px] after:lg:top-[20px] after:lg:z-10
+            after:lg:bg-transparent
+            "
+          >
+{/* Gradient Background UP - Adjusted for 4-row layout */}
+          <div className="hidden lg:block absolute left-0 top-0 w-full h-[50%] pointer-events-none z-20">
+            <div
+              className="absolute inset-0 rounded-t-3xl"
+              style={{
+                background: `
+                  radial-gradient(ellipse 130% 110% at 28% 18%, rgba(168, 85, 247, 0.22), transparent 58%),
+                  radial-gradient(ellipse 115% 95% at 72% 28%, rgba(139, 92, 246, 0.18), transparent 62%),
+                  radial-gradient(ellipse 90% 75% at 50% 45%, rgba(147, 51, 234, 0.12), transparent 68%),
+                  linear-gradient(180deg, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.04) 50%, transparent 85%)
+                `
+              }}
+            />
+            <div
+              className="absolute inset-0 rounded-t-3xl"
+              style={{
+                background: `
+                  radial-gradient(ellipse 105% 88% at 35% 22%, rgba(168, 85, 247, 0.25), transparent 60%),
+                  radial-gradient(ellipse 98% 80% at 68% 38%, rgba(139, 92, 246, 0.2), transparent 65%)
+                `,
+                filter: 'blur(70px)',
+                opacity: 0.35
+              }}
             />
           </div>
 
-          {/* Banner Section 1: 2 columns × 3 rows (Z shape top) */}
-          <div className="col-span-2 lg:col-span-2 xl:col-span-2 xl:row-span-3
-   xl:border-l xl:border-b xl:border-zinc-700/50
-  xl:rounded-l-3xl xl:overflow-visible xl:relative
+          {/* Gradient Background DOWN - Adjusted for 4-row layout */}
+          <div className="hidden lg:block absolute left-0 top-[50%] w-[calc(200%+20px)] h-[50%] pointer-events-none z-20">
+            <div
+              className="absolute inset-0 rounded-r-3xl rounded-bl-3xl"
+              style={{
+                background: `
+                  radial-gradient(ellipse 90% 60% at 30% 40%, rgba(168, 85, 247, 0.11), transparent 65%),
+                  radial-gradient(ellipse 80% 65% at 60% 55%, rgba(192, 132, 252, 0.09), transparent 70%),
+                  radial-gradient(ellipse 70% 55% at 48% 70%, rgba(147, 51, 234, 0.08), transparent 68%),
+                  radial-gradient(ellipse 95% 50% at 70% 45%, rgba(139, 92, 246, 0.06), transparent 72%)
+                `
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: `
+                  radial-gradient(ellipse 85% 55% at 35% 42%, rgba(168, 85, 247, 0.13), transparent 68%),
+                  radial-gradient(ellipse 88% 58% at 62% 58%, rgba(192, 132, 252, 0.1), transparent 72%),
+                  radial-gradient(ellipse 75% 48% at 50% 68%, rgba(147, 51, 234, 0.09), transparent 70%)
+                `,
+                filter: 'blur(65px)',
+                opacity: 0.28
+              }}
+            />
+          </div>
 
-  before:xl:content-[''] before:xl:absolute before:xl:w-[calc(100%-1px)] before:xl:h-[20px]
-  before:xl:border-r before:xl:border-t before:xl:border-zinc-700/50
-  before:xl:rounded-t-3xl before:xl:-top-[0] before:xl:right-[0px] before:xl:z-10
-  before:xl:bg-transparent
-
-  after:xl:content-[''] after:xl:absolute after:xl:w-5 after:xl:h-[201px]
-  after:xl:border-l after:xl:border-b after:xl:border-zinc-700/50
-  after:xl:rounded-bl-3xl after:xl:-right-[19px] after:xl:top-[20px] after:xl:z-10
-  after:xl:bg-transparent"
->
-
-            <div className="xl:overflow-hidden xl:rounded-t-3xl xl:rounded-bl-3xl h-full">
-              <FeaturedCollectionBanner section="upper" />
+            <div className="lg:overflow-hidden lg:rounded-t-3xl lg:rounded-bl-3xl h-full relative">
+              <FeaturedCollectionBanner section="left" />
             </div>
           </div>
 
-          {/* Banner Section 2: 2 columns × 2 rows (right side bottom of L) */}
-          <div className="col-span-2 lg:col-span-2 xl:col-span-2 xl:row-span-2 xl:relative xl:border xl:border-l-0 xl:border-zinc-700/50 xl:rounded-tr-3xl xl:rounded-br-3xl xl:overflow-hidden xl:-ml-[1px] before:xl:content-[''] before:xl:absolute before:xl:w-[200px] before:xl:h-5 before:xl:bg-zinc-950 before:xl:border-t before:xl:border-r before:xl:border-zinc-700/50 before:xl:rounded-tr-3xl before:xl:-left-[1px] before:xl:-top-[1px] before:xl:z-10">
-            <FeaturedCollectionBanner section="lower" />
-          </div>
 
         </div>
       </div>
