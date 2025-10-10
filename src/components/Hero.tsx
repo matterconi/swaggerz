@@ -6,6 +6,7 @@ import HeroDropCard from './HeroDropImage/HeroDropCard';
 import HeroMainCard from './Hero/HeroMainCard';
 import HeroGradientShader from './Hero/HeroGradientShader';
 import FeaturedCollectionBanner from './NFTCollections/FeaturedCollectionBanner';
+import FeaturedArtist from './FeaturedArtist';
 
 const BentoHero = () => {
   const [currentCollection, setCurrentCollection] = useState(0);
@@ -54,7 +55,7 @@ const BentoHero = () => {
         <div className="relative grid grid-cols-2  lg:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto lg:auto-rows-[200px] z-50">
 
           {/* Main Title & CTA - Extended to 4 rows */}
-          <div className="col-span-2 lg:col-span-2 lg:row-span-4">
+          <div className="col-span-2 lg:col-span-4 lg:row-span-3">
             <HeroMainCard
               onHover={() => setHoveredCard('main')}
               onLeave={() => setHoveredCard(null)}
@@ -63,7 +64,7 @@ const BentoHero = () => {
 
           {/* HeroDropCard - Extended to 4 rows */}
           <div
-            className="col-span-2 lg:col-span-2 lg:row-span-4 overflow-hidden min-h-[400px] lg:min-h-0"
+            className="col-span-2 lg:col-span-4 lg:row-span-2 overflow-hidden min-h-[400px] lg:min-h-0"
             onMouseEnter={() => setHoveredCard('drops')}
             onMouseLeave={() => {
               setHoveredCard(null);
@@ -78,7 +79,7 @@ const BentoHero = () => {
           </div>
 
           {/* Banner Section 1 - Extended to 4 rows */}
-         <div className="relative bg-black col-span-2 lg:col-span-2 lg:row-span-4
+         <div className="relative bg-black col-span-2 lg:col-span-2 lg:row-span-3
             lg:border-l lg:border-b lg:border-zinc-700/50
             lg:rounded-l-3xl rounded-tr-3xl lg:overflow-visible
 
@@ -93,8 +94,8 @@ const BentoHero = () => {
             after:lg:bg-transparent
             "
           >
-{/* Gradient Background UP - Adjusted for 4-row layout */}
-          <div className="hidden lg:block absolute left-0 top-0 w-full h-[50%] pointer-events-none z-20">
+          {/* Gradient Background UP - col 1-2, row 2-3 (bottom of Banner 1 + all Banner 2) */}
+          <div className="hidden lg:block absolute left-0 top-0 w-full h-[34.5%] pointer-events-none z-20">
             <div
               className="absolute inset-0 rounded-t-3xl"
               style={{
@@ -119,8 +120,8 @@ const BentoHero = () => {
             />
           </div>
 
-          {/* Gradient Background DOWN - Adjusted for 4-row layout */}
-          <div className="hidden lg:block absolute left-0 top-[50%] w-[calc(200%+20px)] h-[50%] pointer-events-none z-20">
+          {/* Gradient Background DOWN - col 1, row 1 (top part of Banner Section 1) */}
+          <div className="hidden lg:block absolute left-0 top-[34.5%] w-[calc(200%+20px)] h-[65.5%] pointer-events-none z-20">
             <div
               className="absolute inset-0 rounded-r-3xl rounded-bl-3xl"
               style={{
@@ -144,11 +145,38 @@ const BentoHero = () => {
                 opacity: 0.28
               }}
             />
-          </div>
+          </div> 
 
             <div className="lg:overflow-hidden lg:rounded-t-3xl lg:rounded-bl-3xl h-full relative">
               <FeaturedCollectionBanner section="left" />
             </div>
+          </div>
+          {/* Featured Artist - 2 columns, 1 row */}
+          <div className="col-span-2 lg:col-span-2 lg:row-span-1">
+            <FeaturedArtist
+              name="Alex Crypto"
+              avatar="/api/placeholder/80/80"
+              verified={true}
+              followers="24.8K"
+            />
+          </div>
+
+                    {/* Banner Section 2 */}
+          <div className="bg-black relative col-span-2 lg:col-span-2 xl:col-span-2 xl:row-span-2
+            xl:border xl:border-l-0 xl:border-zinc-700/50
+            xl:rounded-tr-3xl xl:rounded-br-3xl xl:overflow-visible z-10"
+          >
+            <svg className="hidden xl:block absolute -left-5 -bottom-[1px] z-10" width="20" height="100%" style={{height: 'calc(100% + 20px)'}}>
+              <defs>
+                <mask id="corner-mask">
+                  <rect width="20" height="100%" fill="white"/>
+                  <circle cx="20" cy="0" r="20" fill="black"/>
+                </mask>
+              </defs>
+              <rect width="20" height="100%" fill="black" mask="url(#corner-mask)"/>
+              <line x1="0" y1="100%" x2="20" y2="100%" stroke="rgb(63 63 70 / 0.5)" strokeWidth="1" transform="translate(0, -0.5)"/>
+            </svg>
+            <FeaturedCollectionBanner section="right" />
           </div>
 
 
