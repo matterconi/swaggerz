@@ -8,7 +8,7 @@ import HeroMainCard from './Hero/HeroMainCard';
 import BannerSectionLeft from './Hero/BannerSectionLeft';
 import BannerSectionRight from './Hero/BannerSectionRight';
 import HeroSliderSection from './Hero/HeroSliderSection';
-import BaseLSection from './Hero/BaseLSection';
+import BrandIdentityWindow from './Hero/BrandIdentityWindow';
 import HeroDropSection from './Hero/HeroDropSection';
 import FeaturedArtist from './FeaturedArtist';
 import TopCollections from './Hero/TopCollections';
@@ -54,9 +54,9 @@ const BentoHero = () => {
           {/* Banner Section Left - Latest Collections (L-shape) */}
           <BannerSectionLeft />
 
-                              {/* Base L Section - 1col, 1row (foundation for L-structure) */}
+                              {/* Brand Identity Window - 1col, 1row (editorial window into brand soul) */}
           <div className="col-span-2 lg:col-span-2 lg:row-span-1 min-h-[200px]">
-            <BaseLSection />
+            <BrandIdentityWindow />
           </div>
 
 

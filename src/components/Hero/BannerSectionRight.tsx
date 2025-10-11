@@ -10,9 +10,9 @@ export default function BannerSectionRight() {
       lg:border lg:border-l-0 lg:border-zinc-700/50
       lg:rounded-tr-3xl lg:rounded-br-3xl lg:overflow-visible z-10
 
-      before:lg:content-[''] before:lg:absolute before:lg:w-[33px] before:lg:h-[calc(100%)]
+      before:lg:content-[''] before:lg:absolute before:lg:w-[33px] before:lg:h-[calc(100%+1px)]
       before:lg:bg-black before:lg:-left-[33px] before:lg:-bottom-[1px]
-      before:lg:border-b before:lg:border-zinc-700/50
+      border-0 before:lg:border-b before:lg:border-zinc-700/50
       before:lg:z-0"
     >
       <svg

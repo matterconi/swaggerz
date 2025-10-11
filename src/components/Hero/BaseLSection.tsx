@@ -10,27 +10,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
  */
 export default function BaseLSection() {
   return (
-    <div className="relative w-full h-full rounded-3xl rounded-t-none border border-t-0 border-zinc-700/50 bg-black overflow-visible group transition-all duration-500">
-      <svg
-        className="absolute -top-[33px] -left-[33px] z-50 rotate-90"
-        width="33"
-        height="33"
-        viewBox="0 0 33 33"
-        style={{ transform: 'translateZ(0)' }}
-      >
-        <path
-          d="M 0 33 Q 0 0 33 0 L 0 0 Z"
-          fill="black"
-          stroke="none"
-        />
-        <path
-          d="M 0.5 33 Q 0.5 0.5 33 0.5"
-          fill="none"
-          stroke="rgb(63 63 70 / 0.5)"
-          strokeWidth="1"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
+    <div className="relative w-full h-full rounded-3xl border  border-zinc-700/50 bg-black overflow-visible group transition-all duration-500">
 
       {/* Inner container with overflow hidden for effects */}
       <div className="absolute inset-0 rounded-3xl rounded-t-none overflow-hidden">
@@ -63,9 +43,9 @@ export default function BaseLSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-2xl lg:text-3xl font-bold text-white mb-3 leading-tight"
         >
-          Where Style Meets
+          Non un brand, 
           <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent">
-            Attitude
+            una Community
           </span>
         </motion.h3>
 
@@ -76,8 +56,9 @@ export default function BaseLSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-zinc-400 text-sm lg:text-base leading-relaxed mb-6 max-w-md"
         >
-          Swaggerz redefines urban fashion with bold designs and authentic streetwear culture.
-          Every piece tells a story of confidence, creativity, and self-expression.
+          Swaggerz nasce per chi vive la strada come una tela da reinventare.
+Non seguiamo le tendenze: le creiamo.
+Con ogni drop, celebriamo l&apos;arte, la libertà e la voglia di cambiare le regole — insieme. Non avere paura, entra nel movimento.
         </motion.p>
 
         {/* CTA */}
@@ -87,7 +68,7 @@ export default function BaseLSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-semibold text-sm group/btn transition-colors"
         >
-          <span>Discover Our Story</span>
+          <span>Scopri la nostra storia</span>
           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
         </motion.button>
       </div>

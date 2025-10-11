@@ -15,7 +15,7 @@ export default function BannerSectionLeft() {
       before:lg:rounded-t-3xl before:lg:-top-[0] before:lg:-right-0
       before:lg:z-10
 
-      after:lg:content-[''] after:lg:absolute after:lg:h-[calc(50%-32px)]
+      after:lg:content-[''] after:lg:absolute after:lg:h-[calc(100%-32px)]
       after:lg:border-l after:lg:border-zinc-700/50
       after:lg:right-0 after:lg:top-8 after:lg:z-10
       after:lg:bg-transparent

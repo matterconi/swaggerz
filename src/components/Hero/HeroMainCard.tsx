@@ -92,12 +92,12 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
             {/* Brand Description */}
             <motion.p
-              className="text-zinc-300 text-base md:text-lg text-center lg:text-left max-w-md mt-4 lg:mt-6 px-4 lg:px-0 leading-relaxed"
+              className="text-zinc-300 text-base md:text-lg text-center lg:text-left max-w-md px-4 lg:px-0 leading-relaxed"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Trasforma le tue NFT in prodotti fisici unici. Design esclusivi, stampa on-demand, stile senza limiti.
+              Swaggerz è il primo Brand di abbigliamento dove puoi comprare NFT certificati per personalizzare i tuoi capi streetwear con le opere dei migliori artisti digitali del momento. 
             </motion.p>
           </motion.div>
 

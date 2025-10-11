@@ -48,14 +48,14 @@ const ShaderText: React.FC<ShaderTextProps> = ({
       width: Math.ceil(bbox.width + buffer),
       height: Math.ceil(bbox.height + buffer)
     };
+
+    console.log(newDimensions)
     
-    // Solo aggiorna se le dimensioni sono cambiate significativamente
-    if (Math.abs(newDimensions.width - textDimensions.width) > 1 || 
-        Math.abs(newDimensions.height - textDimensions.height) > 1) {
+
       setTextDimensions(newDimensions);
       setIsReady(true);
-    }
-  }, [textDimensions]);
+    
+  }, []);
 
   // Misura il testo al mount e quando cambia il contenuto
   useEffect(() => {
