@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Collection } from './types';
 import CollectionBadge from './CollectionBadge';
 import ShaderText from '@/components/ShaderText';
-import ExploreButton from '@/components/HeroDropImage/ExploreButton';
 
 interface LeftSectionProps {
   collection: Collection;
@@ -37,7 +36,7 @@ export default function LeftSection({ collection }: LeftSectionProps) {
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <div className="relative flex flex-col h-full px-4 lg:px-8 py-6 lg:py-8 gap-4 lg:gap-6 z-50">
+      <div className="relative flex flex-col h-full px-6 lg:px-10 py-8 lg:py-10 gap-5 lg:gap-7 z-50">
 
         {/* Badge + Title - Flexible height */}
         <div className="relative z-50 flex-shrink-0 space-y-2 lg:space-y-3">
@@ -56,7 +55,7 @@ export default function LeftSection({ collection }: LeftSectionProps) {
         </p>
 
         {/* Image Gallery Grid - Takes remaining space */}
-        <div className="relative z-50 flex-1 min-h-0 grid grid-cols-2 gap-3 lg:gap-4">
+        <div className="relative z-50 flex-1 min-h-0 grid grid-cols-2 gap-4 lg:gap-5">
           {collection.images.map((img, idx) => (
             <motion.div
               key={idx}
@@ -90,10 +89,6 @@ export default function LeftSection({ collection }: LeftSectionProps) {
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
             </motion.div>
           ))}
-        </div>
-        
-        <div className="relative z-50">
-          <ExploreButton collectionName={collection.title} />
         </div>
       </div>
     </div>

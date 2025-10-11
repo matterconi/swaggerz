@@ -1,184 +1,99 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { collections } from '@/constants/heroCollections';
-import HeroDropCard from './HeroDropImage/HeroDropCard';
+import { useCollectionRotation } from '@/hooks/useCollectionRotation';
+import HeroBackground from './Hero/HeroBackground';
 import HeroMainCard from './Hero/HeroMainCard';
-import HeroGradientShader from './Hero/HeroGradientShader';
-import FeaturedCollectionBanner from './NFTCollections/FeaturedCollectionBanner';
+import BannerSectionLeft from './Hero/BannerSectionLeft';
+import BannerSectionRight from './Hero/BannerSectionRight';
+import HeroSliderSection from './Hero/HeroSliderSection';
+import BaseLSection from './Hero/BaseLSection';
+import HeroDropSection from './Hero/HeroDropSection';
 import FeaturedArtist from './FeaturedArtist';
+import TopCollections from './Hero/TopCollections';
 
 const BentoHero = () => {
-  const [currentCollection, setCurrentCollection] = useState(0);
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [justExitedHover, setJustExitedHover] = useState(false);
-
-  // Auto-rotate collections (pause on hover)
-  useEffect(() => {
-    if (hoveredCard === 'drops') {
-      setJustExitedHover(false);
-      return; // Stop rotation when hovering drop card
-    }
-
-    // Se appena uscito dall'hover, aspetta 2.5s poi cambia immagine
-    if (justExitedHover) {
-      const quickTimeout = setTimeout(() => {
-        setCurrentCollection((prev) => (prev + 1) % collections.length);
-        setJustExitedHover(false);
-      }, 2500);
-
-      return () => clearTimeout(quickTimeout);
-    }
-
-    // Rotazione normale
-    const interval = setInterval(() => {
-      setCurrentCollection((prev) => (prev + 1) % collections.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [hoveredCard, justExitedHover]);
+  const {
+    currentCollection,
+    setCurrentCollection,
+    hoveredCard,
+    setHoveredCard,
+    setJustExitedHover
+  } = useCollectionRotation({
+    totalCollections: collections.length,
+    rotationInterval: 4000,
+    pauseAfterHoverDuration: 2500
+  });
 
 
   return (
-     <section className="relative bg-zinc-950 font-jost pt-16 lg:pt-20 min-h-screen overflow-hidden">
-      {/* Animated background gradients */}
-      <div className="absolute inset-0 z-20">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <section className="relative bg-zinc-950 font-jost pt-20 min-h-screen overflow-hidden">
+      {/* Background with animated gradients */}
+      <HeroBackground />
 
-        {/* Main card emphasis gradient with shader */}
-        <HeroGradientShader />
-      </div>
+      {/* Main content container */}
+      <div className="relative z-50 container mx-auto px-6 sm:px-8 lg:px-12 py-16 lg:py-20">
+        {/* Unified Bento Grid */}
+        <div className="relative grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 auto-rows-auto z-50">
 
-      <div className="relative z-50 container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        {/* Unified Bento Grid - Everything in one grid */}
-        <div className="relative grid grid-cols-2  lg:grid-cols-4 gap-4 lg:gap-5 auto-rows-auto lg:auto-rows-[200px] z-50">
-
-          {/* Main Title & CTA - Extended to 4 rows */}
-          <div className="col-span-2 lg:col-span-4 lg:row-span-3">
+          {/* Main Title & CTA */}
+          <div className="col-span-2 lg:col-span-4 lg:row-span-2">
             <HeroMainCard
               onHover={() => setHoveredCard('main')}
               onLeave={() => setHoveredCard(null)}
             />
           </div>
 
-          {/* HeroDropCard - Extended to 4 rows */}
-          <div
-            className="col-span-2 lg:col-span-4 lg:row-span-2 overflow-hidden min-h-[400px] lg:min-h-0"
+          {/* New Slider Section - 2cols, 2rows */}
+          <div className="col-span-2 lg:col-span-4 lg:row-span-2 min-h-[400px] ">
+            <HeroSliderSection />
+          </div>
+
+
+          {/* Banner Section Left - Latest Collections (L-shape) */}
+          <BannerSectionLeft />
+
+                              {/* Base L Section - 1col, 1row (foundation for L-structure) */}
+          <div className="col-span-2 lg:col-span-2 lg:row-span-1 min-h-[200px]">
+            <BaseLSection />
+          </div>
+
+
+          {/* Banner Section Right */}
+          <BannerSectionRight />
+
+          {/* NFT Drops Section */}
+          <HeroDropSection
+            currentCollection={currentCollection}
+            onCollectionChange={setCurrentCollection}
             onMouseEnter={() => setHoveredCard('drops')}
             onMouseLeave={() => {
               setHoveredCard(null);
               setJustExitedHover(true);
             }}
-          >
-            <HeroDropCard
-              currentCollection={currentCollection}
-              collections={collections}
-              onCollectionChange={setCurrentCollection}
-            />
+          />
+
+          {/* Top Collections Sidebar */}
+          <div className="col-span-2 lg:col-span-1 lg:row-span-2 min-h-[300px] lg:min-h-0">
+            <TopCollections />
           </div>
 
-          {/* Banner Section 1 - Extended to 4 rows */}
-         <div className="relative bg-black col-span-2 lg:col-span-2 lg:row-span-3
-            lg:border-l lg:border-b lg:border-zinc-700/50
-            lg:rounded-l-3xl rounded-tr-3xl lg:overflow-visible
-
-            before:lg:content-[''] before:lg:absolute before:lg:w-[calc(100%-1px)] before:lg:h-[20px]
-            before:lg:border-r before:lg:border-t before:lg:border-zinc-700/50
-            before:lg:rounded-t-3xl before:lg:-top-[0] before:lg:-right-0
-            before:lg:z-10
-
-            after:lg:content-[''] after:lg:absolute after:lg:w-[21px] after:lg:h-[201px]
-            after:lg:border-l after:lg:border-b after:lg:border-zinc-700/50
-            after:lg:rounded-bl-3xl after:lg:-right-[20px] after:lg:top-[20px] after:lg:z-10
-            after:lg:bg-transparent
-            "
-          >
-          {/* Gradient Background UP - col 1-2, row 2-3 (bottom of Banner 1 + all Banner 2) */}
-          <div className="hidden lg:block absolute left-0 top-0 w-full h-[34.5%] pointer-events-none z-20">
-            <div
-              className="absolute inset-0 rounded-t-3xl"
-              style={{
-                background: `
-                  radial-gradient(ellipse 130% 110% at 28% 18%, rgba(168, 85, 247, 0.22), transparent 58%),
-                  radial-gradient(ellipse 115% 95% at 72% 28%, rgba(139, 92, 246, 0.18), transparent 62%),
-                  radial-gradient(ellipse 90% 75% at 50% 45%, rgba(147, 51, 234, 0.12), transparent 68%),
-                  linear-gradient(180deg, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.04) 50%, transparent 85%)
-                `
-              }}
-            />
-            <div
-              className="absolute inset-0 rounded-t-3xl"
-              style={{
-                background: `
-                  radial-gradient(ellipse 105% 88% at 35% 22%, rgba(168, 85, 247, 0.25), transparent 60%),
-                  radial-gradient(ellipse 98% 80% at 68% 38%, rgba(139, 92, 246, 0.2), transparent 65%)
-                `,
-                filter: 'blur(70px)',
-                opacity: 0.35
-              }}
-            />
-          </div>
-
-          {/* Gradient Background DOWN - col 1, row 1 (top part of Banner Section 1) */}
-          <div className="hidden lg:block absolute left-0 top-[34.5%] w-[calc(200%+20px)] h-[65.5%] pointer-events-none z-20">
-            <div
-              className="absolute inset-0 rounded-r-3xl rounded-bl-3xl"
-              style={{
-                background: `
-                  radial-gradient(ellipse 90% 60% at 30% 40%, rgba(168, 85, 247, 0.11), transparent 65%),
-                  radial-gradient(ellipse 80% 65% at 60% 55%, rgba(192, 132, 252, 0.09), transparent 70%),
-                  radial-gradient(ellipse 70% 55% at 48% 70%, rgba(147, 51, 234, 0.08), transparent 68%),
-                  radial-gradient(ellipse 95% 50% at 70% 45%, rgba(139, 92, 246, 0.06), transparent 72%)
-                `
-              }}
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `
-                  radial-gradient(ellipse 85% 55% at 35% 42%, rgba(168, 85, 247, 0.13), transparent 68%),
-                  radial-gradient(ellipse 88% 58% at 62% 58%, rgba(192, 132, 252, 0.1), transparent 72%),
-                  radial-gradient(ellipse 75% 48% at 50% 68%, rgba(147, 51, 234, 0.09), transparent 70%)
-                `,
-                filter: 'blur(65px)',
-                opacity: 0.28
-              }}
-            />
-          </div> 
-
-            <div className="lg:overflow-hidden lg:rounded-t-3xl lg:rounded-bl-3xl h-full relative">
-              <FeaturedCollectionBanner section="left" />
-            </div>
-          </div>
-          {/* Featured Artist - 2 columns, 1 row */}
-          <div className="col-span-2 lg:col-span-2 lg:row-span-1">
+                    {/* Featured Artist - moved to bottom */}
+          <div className="col-span-2 lg:col-span-1 lg:row-span-2 min-h-[400px] lg:min-h-0">
             <FeaturedArtist
-              name="Alex Crypto"
-              avatar="/api/placeholder/80/80"
+              name="Beeple"
+              avatar="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop"
+              backgroundImage="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=400&fit=crop"
               verified={true}
-              followers="24.8K"
+              followers="2.1M"
+              galleryCards={collections.map((col, idx) => ({
+                id: idx + 1,
+                image: col.image,
+                title: col.name
+              }))}
             />
           </div>
-
-                    {/* Banner Section 2 */}
-          <div className="bg-black relative col-span-2 lg:col-span-2 xl:col-span-2 xl:row-span-2
-            xl:border xl:border-l-0 xl:border-zinc-700/50
-            xl:rounded-tr-3xl xl:rounded-br-3xl xl:overflow-visible z-10"
-          >
-            <svg className="hidden xl:block absolute -left-5 -bottom-[1px] z-10" width="20" height="100%" style={{height: 'calc(100% + 20px)'}}>
-              <defs>
-                <mask id="corner-mask">
-                  <rect width="20" height="100%" fill="white"/>
-                  <circle cx="20" cy="0" r="20" fill="black"/>
-                </mask>
-              </defs>
-              <rect width="20" height="100%" fill="black" mask="url(#corner-mask)"/>
-              <line x1="0" y1="100%" x2="20" y2="100%" stroke="rgb(63 63 70 / 0.5)" strokeWidth="1" transform="translate(0, -0.5)"/>
-            </svg>
-            <FeaturedCollectionBanner section="right" />
-          </div>
-
 
         </div>
       </div>

@@ -52,7 +52,7 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
   return (
     <motion.div
-      className="group relative p-6 lg:p-8 overflow-hidden h-full"
+      className="group relative p-8 lg:p-10 overflow-hidden"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
       whileHover={{
@@ -60,20 +60,21 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
       }}
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
+      {/* Layout responsive: colonna singola su mobile, due colonne su desktop */}
+      <div className="relative h-full flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
 
-      <div className="relative h-full flex flex-col mx-auto">
-        {/* Header Section */}
-        <div className="mb-4">
+        {/* Left Column - Text Content */}
+        <div className="flex-1 flex flex-col justify-center">
           {/* Title with ShaderText preserved */}
           <motion.div
             ref={titleContainerRef}
-            className=" md:my-4 flex flex-col justify-center items-center max-w-[600px] mx-auto"
+            className="flex flex-col justify-center items-center lg:items-start"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             {/* Main Title - "Colleziona. Stampa." normale, "Indossa." con ShaderText */}
-            <div className="text-center font-jost">
+            <div className="text-center lg:text-left font-jost">
               <div
                 className="text-zinc-100 leading-none"
                 style={{ fontSize: titleFontSize, fontWeight: 900 }}
@@ -91,26 +92,25 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
             {/* Brand Description */}
             <motion.p
-              className="text-zinc-300 text-base md:text-lg text-center max-w-md px-4 leading-relaxed"
+              className="text-zinc-300 text-base md:text-lg text-center lg:text-left max-w-md mt-4 lg:mt-6 px-4 lg:px-0 leading-relaxed"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               Trasforma le tue NFT in prodotti fisici unici. Design esclusivi, stampa on-demand, stile senza limiti.
             </motion.p>
-
           </motion.div>
-        </div>
 
-        {/* Gallery Preview + Button Section */}
-        <div className='w-full flex flex-col items-center gap-8 md:gap-10 flex-1 justify-center mt-6 md:mt-8'>
-          {/* Rectangular Button - sopra gallery fino a lg, sotto su schermi grandi */}
-          <div className='flex shrink-0 order-1 lg:order-2'>
+          {/* Rectangular Button */}
+          <div className='flex justify-center lg:justify-start mt-6 lg:mt-8'>
             <RectangularButton />
           </div>
+        </div>
 
-          {/* Gallery Preview - mobile/tablet */}
-          <div className='w-full flex justify-center lg:hidden order-2 lg:order-1'>
+        {/* Right Column - Gallery */}
+        <div className="flex-1 flex items-center justify-center">
+          {/* Gallery Preview - mobile */}
+          <div className='w-full flex justify-center lg:hidden'>
             <div className="h-[140px] max-w-[600px] w-full">
               <CircularGallery />
             </div>
@@ -118,9 +118,9 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
           {/* Gallery Preview - desktop (lg+) */}
           <motion.div
-            className="h-[200px] max-w-[600px] w-full hidden lg:block order-2 lg:order-1"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="h-[280px] w-full hidden lg:flex items-center justify-center"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
             <CircularGallery />
