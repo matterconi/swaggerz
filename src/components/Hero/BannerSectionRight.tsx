@@ -6,14 +6,14 @@ import FeaturedCollectionBanner from '../NFTCollections/FeaturedCollectionBanner
  */
 export default function BannerSectionRight() {
   return (
-    <div className="bg-black relative col-span-2 lg:col-span-2 lg:row-span-2
+    <div className="h-full relative col-span-2 lg:col-span-2 lg:row-span-2
       lg:border lg:border-l-0 lg:border-zinc-700/50
-      lg:rounded-tr-3xl lg:rounded-br-3xl lg:overflow-visible z-10
+      lg:rounded-tr-3xl lg:rounded-br-3xl lg:overflow-visible z-20
 
       before:lg:content-[''] before:lg:absolute before:lg:w-[33px] before:lg:h-[calc(100%+1px)]
-      before:lg:bg-black before:lg:-left-[33px] before:lg:-bottom-[1px]
+     before:lg:-left-[33px] before:lg:-bottom-[1px]
       border-0 before:lg:border-b before:lg:border-zinc-700/50
-      before:lg:z-0"
+      before:lg:z-10"
     >
       <svg
         className="hidden lg:block absolute -left-[33px] -top-[33px] z-10 rotate-270"

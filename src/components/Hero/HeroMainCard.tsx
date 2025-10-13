@@ -97,7 +97,7 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Swaggerz è il primo Brand di abbigliamento dove puoi comprare NFT certificati per personalizzare i tuoi capi streetwear con le opere dei migliori artisti digitali del momento. 
+              Personalizza i tuoi capi NFT certificati dei migliori artisti digitali, o acquista i capi esclusivi delle nostre collezioni. 
             </motion.p>
           </motion.div>
 

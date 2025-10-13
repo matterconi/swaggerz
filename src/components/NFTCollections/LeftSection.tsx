@@ -32,7 +32,7 @@ export default function LeftSection({ collection }: LeftSectionProps) {
   const colors = colorMap[collection.badgeColor];
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full h-full">
       <div className="relative flex flex-col h-full px-6 lg:px-10 py-8 lg:py-10 gap-5 lg:gap-6 z-50">
 
         {/* Badge + Title - Flexible height */}
@@ -47,68 +47,47 @@ export default function LeftSection({ collection }: LeftSectionProps) {
         </div>
 
         {/* Description - Flexible height */}
-        <p className="relative z-50 flex-shrink-0 text-sm lg:text-base text-zinc-400 leading-relaxed">
+        <p className="relative z-50 flex-shrink-0 text-sm lg:text-base text-zinc-300 leading-relaxed font-medium">
           {collection.description}
         </p>
 
-        {/* Featured Image - Main highlight */}
+        {/* Featured Card - Image only */}
         <motion.div
-          className="relative z-50 flex-shrink-0 w-full h-48 lg:h-56 xl:h-64 rounded-lg lg:rounded-xl overflow-hidden border-2 border-zinc-800 group cursor-pointer"
+          className="relative z-50 flex-shrink-0 bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/60 rounded-xl lg:rounded-2xl overflow-hidden"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ y: -4 }}
           transition={{ duration: 0.3 }}
         >
-          {/* Glow effect */}
+          {/* Glow effect esterno */}
           <motion.div
-            className="absolute -inset-2 rounded-xl blur-xl"
-            style={{ background: `radial-gradient(circle, ${colors.shadow}, transparent 70%)` }}
+            className="absolute -inset-1 rounded-2xl blur-xl"
+            style={{ background: `radial-gradient(circle at 50% 30%, ${colors.shadow}, transparent 65%)` }}
             animate={{
-              opacity: isHovered ? 0.8 : 0,
+              opacity: isHovered ? 0.7 : 0,
             }}
             transition={{ duration: 0.3 }}
           />
 
-          <Image
-            src={collection.images[0]}
-            alt={`${collection.title} featured`}
-            fill
-            className="object-cover transition-transform duration-500"
-            style={{
-              transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-            }}
-          />
+          {/* Featured Image */}
+          <div className="relative w-full h-64 lg:h-72 xl:h-80 overflow-hidden group cursor-pointer">
+            <Image
+              src={collection.images[0]}
+              alt={`${collection.title} featured`}
+              fill
+              className="object-cover transition-transform duration-500"
+              style={{
+                transform: isHovered ? 'scale(1.08)' : 'scale(1)',
+              }}
+            />
 
-          {/* Overlay scuro on hover */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+            {/* Subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+            {/* Overlay scuro on hover */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+          </div>
         </motion.div>
-
-        {/* Stats Grid - Single Row */}
-        <div className="relative z-50 flex-shrink-0 grid grid-cols-4 gap-2 lg:gap-3">
-          {/* Floor Price */}
-          <div className="relative z-50 bg-zinc-900/50 border border-zinc-800 rounded-lg lg:rounded-xl p-2 lg:p-3 space-y-1">
-            <p className="relative z-50 text-xs text-zinc-500 font-medium">Prezzo</p>
-            <p className="relative z-50 text-base lg:text-xl font-black text-white">{collection.price}</p>
-          </div>
-
-          {/* Total Items */}
-          <div className="relative z-50 bg-zinc-900/50 border border-zinc-800 rounded-lg lg:rounded-xl p-2 lg:p-3 space-y-1">
-            <p className="relative z-50 text-xs text-zinc-500 font-medium">Pezzi</p>
-            <p className="relative z-50 text-base lg:text-xl font-black text-white">{collection.pieces}</p>
-          </div>
-
-          {/* Collection Rank */}
-          <div className="relative z-50 bg-zinc-900/50 border border-zinc-800 rounded-lg lg:rounded-xl p-2 lg:p-3 space-y-1">
-            <p className="relative z-50 text-xs text-zinc-500 font-medium">Collezione</p>
-            <p className="relative z-50 text-base lg:text-xl font-black text-white">#{collection.id}</p>
-          </div>
-
-          {/* Availability */}
-          <div className="relative z-50 bg-zinc-900/50 border border-zinc-800 rounded-lg lg:rounded-xl p-2 lg:p-3 space-y-1">
-            <p className="relative z-50 text-xs text-zinc-500 font-medium">Disp.</p>
-            <p className="relative z-50 text-base lg:text-xl font-black text-emerald-500">Alta</p>
-          </div>
-        </div>
 
         {/* Brand Info - Flexible */}
         <div className="relative z-50 flex-shrink-0 bg-zinc-900/50 border border-zinc-800 rounded-lg lg:rounded-xl p-4 lg:p-5">

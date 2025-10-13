@@ -1,168 +1,130 @@
 "use client"
 
-import React, { useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Product {
-  name: string;
-  category: string;
+  id: number;
   image: string;
+  title: string;
+  category: string;
   price: string;
 }
 
-const ProductShowcase: React.FC = () => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+const products: Product[] = [
+  {
+    id: 1,
+    image: "https://images.unsplash.com/photo-1617922001439-4a2e6562f328?w=800&h=1000&fit=crop&q=80",
+    title: "Luxury Sneakers",
+    category: "Footwear",
+    price: "€450"
+  },
+  {
+    id: 2,
+    image: "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&h=1000&fit=crop&q=80",
+    title: "Designer Watch",
+    category: "Accessories",
+    price: "€1,200"
+  },
+  {
+    id: 3,
+    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800&h=1000&fit=crop&q=80",
+    title: "Leather Jacket",
+    category: "Outerwear",
+    price: "€890"
+  },
+  {
+    id: 4,
+    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&h=1000&fit=crop&q=80",
+    title: "Premium Sunglasses",
+    category: "Accessories",
+    price: "€320"
+  },
+  {
+    id: 5,
+    image: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?w=800&h=1000&fit=crop&q=80",
+    title: "Minimalist Bag",
+    category: "Bags",
+    price: "€650"
+  },
+  {
+    id: 6,
+    image: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=800&h=1000&fit=crop&q=80",
+    title: "Statement Ring",
+    category: "Jewelry",
+    price: "€280"
+  }
+];
 
-  const products: Product[] = [
-    {
-      name: 'Classic White Tee',
-      category: 'T-Shirt',
-      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&h=800&fit=crop',
-      price: '29.99€'
-    },
-    {
-      name: 'Urban Hoodie',
-      category: 'Felpe',
-      image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&h=800&fit=crop',
-      price: '59.99€'
-    },
-    {
-      name: 'Comfort Joggers',
-      category: 'Pantaloni',
-      image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600&h=800&fit=crop',
-      price: '49.99€'
-    },
-    {
-      name: 'Winter Jacket',
-      category: 'Giubbotti',
-      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&h=800&fit=crop',
-      price: '89.99€'
-    },
-    {
-      name: 'Graphic Tee',
-      category: 'T-Shirt',
-      image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&h=800&fit=crop',
-      price: '34.99€'
-    },
-    {
-      name: 'Zip Hoodie',
-      category: 'Felpe',
-      image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600&h=800&fit=crop',
-      price: '64.99€'
-    },
-    {
-      name: 'Denim Jeans',
-      category: 'Pantaloni',
-      image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&h=800&fit=crop',
-      price: '69.99€'
-    },
-    {
-      name: 'Bomber Jacket',
-      category: 'Giubbotti',
-      image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop',
-      price: '99.99€'
-    }
-  ];
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 320;
-      const newScrollLeft = scrollContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
-      scrollContainerRef.current.scrollTo({
-        left: newScrollLeft,
-        behavior: 'smooth'
-      });
-    }
-  };
-
+const ProductShowcase = () => {
   return (
-    <div className="w-full bg-zinc-950 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="container mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+    <div className="w-full bg-black rounded-3xl overflow-hidden border border-zinc-800/50">
+      {/* Header */}
+      <div className="px-6 lg:px-8 py-6 border-b border-zinc-800/50">
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-white mb-2">Categorie Popolari</h2>
-            <p className="text-zinc-400">Scopri i nostri prodotti più venduti</p>
+            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-1">
+              Featured Collection
+            </h2>
+            <p className="text-zinc-400 text-sm">
+              Curated selection of premium pieces
+            </p>
           </div>
-
-          {/* Navigation Buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={() => scroll('left')}
-              className="p-3 rounded-full bg-zinc-800/50 hover:bg-zinc-700/50 text-white transition-all duration-300 border border-zinc-700/50 hover:border-zinc-600/50"
-              aria-label="Scorri a sinistra"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => scroll('right')}
-              className="p-3 rounded-full bg-zinc-800/50 hover:bg-zinc-700/50 text-white transition-all duration-300 border border-zinc-700/50 hover:border-zinc-600/50"
-              aria-label="Scorri a destra"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Products Slider */}
-        <div className="relative">
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-            }}
-          >
-            {products.map((product, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-[280px] group cursor-pointer"
-              >
-                <div className="relative bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300">
-                  {/* Image Container */}
-                  <div className="relative w-full h-[380px] overflow-hidden bg-zinc-800">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      sizes="280px"
-                    />
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent opacity-60" />
-                  </div>
-
-                  {/* Product Info */}
-                  <div className="p-4">
-                    <p className="text-xs text-zinc-500 uppercase tracking-wider mb-1">
-                      {product.category}
-                    </p>
-                    <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-zinc-300 transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-zinc-400 font-medium">{product.price}</p>
-                  </div>
-
-                  {/* Hover Effect Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Fade Edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-zinc-950 to-transparent pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-zinc-950 to-transparent pointer-events-none" />
+          <button className="hidden md:flex px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full text-sm font-medium transition-colors border border-zinc-700/50">
+            View All
+          </button>
         </div>
       </div>
 
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+      {/* Product Grid */}
+      <div className="p-4 lg:p-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="group relative aspect-[3/4] rounded-xl lg:rounded-2xl overflow-hidden bg-zinc-900 cursor-pointer"
+            >
+              {/* Product Image */}
+              <div className="relative w-full h-full overflow-hidden">
+                <Image
+                  src={product.image}
+                  alt={product.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                />
+
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              {/* Product Info - Always visible on mobile, hover on desktop */}
+              <div className="absolute inset-x-0 bottom-0 p-3 lg:p-4 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-300">
+                <div className="text-white">
+                  <p className="text-[10px] lg:text-xs text-zinc-300 mb-0.5 lg:mb-1 uppercase tracking-wide">{product.category}</p>
+                  <h3 className="font-semibold text-xs lg:text-sm mb-0.5 lg:mb-1 line-clamp-1">{product.title}</h3>
+                  <p className="text-yellow-500 font-bold text-xs lg:text-sm">{product.price}</p>
+                </div>
+              </div>
+
+              {/* Hover Border Effect */}
+              <div className="absolute inset-0 border-2 border-yellow-500/0 group-hover:border-yellow-500/40 rounded-xl lg:rounded-2xl transition-all duration-300 pointer-events-none" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="px-6 lg:px-8 py-4 lg:py-6 border-t border-zinc-800/50 bg-zinc-950/50">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-zinc-400 text-xs lg:text-sm">
+            New arrivals every week
+          </p>
+          <button className="md:hidden w-full px-6 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full text-sm font-medium transition-colors border border-zinc-700/50">
+            View All Products
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

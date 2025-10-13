@@ -32,9 +32,8 @@ const colorMap = {
 
 export default function RightSection({ collection, onPrevious, onNext }: RightSectionProps) {
   const [hoveredImg, setHoveredImg] = useState<number | null>(null);
-  const colors = colorMap[collection.badgeColor];
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full h-full overflow-hidden z-0 rounded-r-3xl">
       <div className="relative z-50 flex flex-col h-full py-8 lg:py-10 gap-5 lg:gap-6 pr-10">
 
         {/* Image Gallery Grid - Takes remaining space */}
@@ -43,33 +42,28 @@ export default function RightSection({ collection, onPrevious, onNext }: RightSe
             <motion.div
               key={idx}
               className="relative z-50 w-full h-full min-h-[100px] rounded-lg lg:rounded-xl overflow-hidden border-2 border-zinc-800 group cursor-pointer"
-              onMouseEnter={() => setHoveredImg(idx)}
-              onMouseLeave={() => setHoveredImg(null)}
+
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Glow effect */}
-              <motion.div
-                className="absolute -inset-2 rounded-xl blur-xl"
-                style={{ background: `radial-gradient(circle, ${colors.shadow}, transparent 70%)` }}
-                animate={{
-                  opacity: hoveredImg === idx ? 0.8 : 0,
-                }}
-                transition={{ duration: 0.3 }}
-              />
 
               <Image
                 src={img}
                 alt={`${collection.title} ${idx + 1}`}
                 fill
-                className="object-cover transition-transform duration-500"
-                style={{
-                  transform: hoveredImg === idx ? 'scale(1.1)' : 'scale(1)',
-                }}
+                className="object-cover transition-transform duration-500 relative z-10"
+                
               />
 
+              {/* Badge "New" piccolo */}
+              <div className="absolute top-2 left-2 z-20 px-2.5 py-1 bg-white rounded-full shadow-lg">
+                <span className="text-emerald-600 text-[10px] font-black uppercase tracking-wide">
+                  New
+                </span>
+              </div>
+
               {/* Overlay scuro on hover */}
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 z-10" />
             </motion.div>
           ))}
         </div>

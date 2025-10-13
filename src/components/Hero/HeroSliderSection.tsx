@@ -5,12 +5,12 @@ import React from 'react';
 
 /**
  * Hero video section
- * Fullscreen video background
+ * Brand identity with essential info
  */
 export default function HeroSliderSection() {
   return (
-    <div className="w-full min-h-[400px] h-full relative 
-       lg:border-[1px]  lg:border-zinc-700/50
+    <div className="w-full min-h-[500px] md:min-h-[600px] h-full relative 
+       lg:border-[1px] lg:border-zinc-700/50
       lg:rounded-3xl overflow-hidden
       "
     >
@@ -35,15 +35,35 @@ export default function HeroSliderSection() {
       {/* Dark overlay for better text contrast */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent rounded-3xl" />
 
-      {/* Text Overlay */}
+      {/* Content Overlay */}
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="text-center px-6">
+          {/* Brand Name */}
           <ShaderText>
             SWAGGERZ
           </ShaderText>
-          <p className="text-xl md:text-2xl text-white font-light tracking-wider uppercase">
-            Lifestyle
-          </p>
+          
+          {/* Tagline/Info */}
+          <div className="space-y-2">
+            <p className="text-xl md:text-2xl text-white font-light tracking-wider uppercase">
+              Lifestyle
+            </p>
+            <p className="text-base md:text-lg text-white/70 font-light tracking-wide">
+              Streetwear and Digital art since 2025
+            </p>
+          </div>
+
+          {/* Subtle CTA - optional */}
+          <div className="pt-8">
+            <a 
+              href="#collection" 
+              className="inline-block text-white/90 text-sm md:text-base uppercase tracking-widest
+                border-b-2 border-white/40 hover:border-white transition-all duration-300
+                pb-1"
+            >
+              Esplora la nuova collezione
+            </a>
+          </div>
         </div>
       </div>
     </div>
