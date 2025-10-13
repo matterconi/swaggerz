@@ -27,7 +27,7 @@ const BentoHero = () => {
   });
 
   return (
-    <section className="relative bg-zinc-950 font-jost pt-20 min-h-screen overflow-hidden">
+    <section className="relative bg-zinc-950 font-jost pt-20 min-h-screen">
       {/* Background with animated gradients */}
       <HeroBackground />
 
@@ -40,7 +40,7 @@ const BentoHero = () => {
             <HeroSliderSection />
           </div>
           {/* Main Title & CTA - row 1-2 */}
-          <div className="col-span-2 lg:col-span-4 lg:row-span-2">
+          <div className="col-span-2 lg:col-span-4 lg:row-span-2 h-full">
             <HeroMainCard
               onHover={() => setHoveredCard('main')}
               onLeave={() => setHoveredCard(null)}

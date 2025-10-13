@@ -45,9 +45,6 @@ export default function HeroSliderSection() {
           
           {/* Tagline/Info */}
           <div className="space-y-2">
-            <p className="text-xl md:text-2xl text-white font-light tracking-wider uppercase">
-              Lifestyle
-            </p>
             <p className="text-base md:text-lg text-white/70 font-light tracking-wide">
               Streetwear and Digital art since 2025
             </p>
