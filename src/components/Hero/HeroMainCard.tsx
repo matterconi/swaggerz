@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ShaderText from '@/components/ShaderText';
 import { motion } from 'framer-motion';
-import CircularGallery from './CircularGallery';
+import AvatarCanvas from '@/components/Avatar/AvatarCanvas';
 import RectangularButton from './RectangularButton';
 import { Flame } from 'lucide-react';
 
@@ -52,16 +52,12 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
 
   return (
     <motion.div
-      className="group relative p-8 lg:p-10 overflow-hidden"
+      className="group relative h-full"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      whileHover={{
-        scale: 1.01
-      }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
     >
       {/* Layout responsive: colonna singola su mobile, due colonne su desktop */}
-      <div className="relative h-full flex flex-col lg:flex-row lg:items-center gap-8 lg:gap-12">
+      <div className="relative h-full flex flex-col lg:flex-row p-8 lg:p-10">
 
         {/* Left Column - Text Content */}
         <div className="flex-1 flex flex-col justify-center">
@@ -107,24 +103,55 @@ const HeroMainCard: React.FC<HeroMainCardProps> = ({ onHover, onLeave }) => {
           </div>
         </div>
 
-        {/* Right Column - Gallery */}
-        <div className="flex-1 flex items-center justify-center">
-          {/* Gallery Preview - mobile */}
-          <div className='w-full flex justify-center lg:hidden'>
-            <div className="h-[140px] max-w-[600px] w-full">
-              <CircularGallery />
+        {/* Right Column - Avatars */}
+        <div className="h-full lg:w-[600px] lg:flex-shrink-0">
+          {/* Avatar Preview - mobile (solo uno per spazio limitato) */}
+          <div className='w-full h-full flex justify-center lg:hidden'>
+            <div className="h-full max-w-[600px] w-full">
+              <AvatarCanvas
+                avatarType="man"
+                animation="idle"
+                enableZoom={false}
+                minAzimuthAngle={-Math.PI / 2}
+                maxAzimuthAngle={Math.PI / 2}
+              />
             </div>
           </div>
 
-          {/* Gallery Preview - desktop (lg+) */}
-          <motion.div
-            className="h-[280px] w-full hidden lg:flex items-center justify-center"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
-            <CircularGallery />
-          </motion.div>
+          {/* Avatars affiancati - desktop (lg+) */}
+          <div className="h-full w-full hidden lg:flex gap-4 max-h-[450px]">
+            {/* Avatar Man */}
+            <motion.div
+              className="aspect-[9/16] h-full "
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
+              <AvatarCanvas
+                avatarType="man"
+                animation="idle"
+                enableZoom={false}
+                minAzimuthAngle={-Math.PI / 2}
+                maxAzimuthAngle={Math.PI / 2}
+              />
+            </motion.div>
+
+            {/* Avatar Girl */}
+            <motion.div
+              className="h-full aspect-[9/16]"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <AvatarCanvas
+                avatarType="girl"
+                animation="idle"
+                enableZoom={false}
+                minAzimuthAngle={-Math.PI / 2}
+                maxAzimuthAngle={Math.PI / 2}
+              />
+            </motion.div>
+          </div>
         </div>
       </div>
     </motion.div>
