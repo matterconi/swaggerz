@@ -4,10 +4,10 @@ import React from 'react';
 import { collections } from '@/constants/heroCollections';
 import { useCollectionRotation } from '@/hooks/useCollectionRotation';
 import HeroBackground from './Hero/HeroBackground';
-import HeroMainCard from './Hero/HeroMainCard';
+import Hero3dContent from './Hero/Hero3dContent';
 import BannerSectionLeft from './Hero/BannerSectionLeft';
 import BannerSectionRight from './Hero/BannerSectionRight';
-import HeroSliderSection from './Hero/HeroSliderSection';
+import HeroVideoBanner from './Hero/HeroVideoBanner';
 import BrandIdentityWindow from './Hero/BrandIdentityWindow';
 import HeroDropSection from './Hero/HeroDropSection';
 import FeaturedArtist from './FeaturedArtist';
@@ -35,13 +35,13 @@ const BentoHero = () => {
       <div className="relative z-50 container mx-auto px-6 sm:px-8 lg:px-12 pt-8">
         {/* Unified Bento Grid */}
         <div className="relative grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 auto-rows-auto z-50">
-                    {/* New Slider Section - row 3-4 */}
+                    {/* Video Banner Section - row 3-4 */}
           <div className="col-span-2 lg:col-span-4 lg:row-span-2 min-h-[400px]">
-            <HeroSliderSection />
+            <HeroVideoBanner />
           </div>
-          {/* Main Title & CTA - row 1-2 */}
+          {/* 3D Content Section - row 1-2 */}
           <div className="col-span-2 lg:col-span-4 lg:row-span-2 h-full">
-            <HeroMainCard
+            <Hero3dContent
               onHover={() => setHoveredCard('main')}
               onLeave={() => setHoveredCard(null)}
             />

@@ -57,11 +57,7 @@ export function AvatarMan({ animation = 'idle', ...props }: AvatarManProps) {
 
   // Cambia animazione quando cambia la prop
   useEffect(() => {
-    console.log('🔍 [AvatarMan] Available actions:', Object.keys(actions));
-
     if (actions[animation]) {
-      console.log(`🎬 [AvatarMan] Playing animation: ${animation}`);
-
       // Ferma tutte le altre animazioni
       Object.keys(actions).forEach((key) => {
         if (key !== animation && actions[key]) {
@@ -74,8 +70,6 @@ export function AvatarMan({ animation = 'idle', ...props }: AvatarManProps) {
       return () => {
         actions[animation]?.fadeOut(0.5);
       };
-    } else {
-      console.warn(`⚠️ [AvatarMan] Animation "${animation}" not found in actions`);
     }
   }, [animation, actions]);
 

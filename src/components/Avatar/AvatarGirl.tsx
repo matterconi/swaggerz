@@ -57,11 +57,7 @@ export function AvatarGirl({ animation = 'dance', ...props }: AvatarGirlProps) {
 
   // Cambia animazione quando cambia la prop
   useEffect(() => {
-    console.log('🔍 [AvatarGirl] Available actions:', Object.keys(actions));
-
     if (actions[animation]) {
-      console.log(`🎬 [AvatarGirl] Playing animation: ${animation}`);
-
       // Ferma tutte le altre animazioni
       Object.keys(actions).forEach((key) => {
         if (key !== animation && actions[key]) {
@@ -74,8 +70,6 @@ export function AvatarGirl({ animation = 'dance', ...props }: AvatarGirlProps) {
       return () => {
         actions[animation]?.fadeOut(0.5);
       };
-    } else {
-      console.warn(`⚠️ [AvatarGirl] Animation "${animation}" not found in actions`);
     }
   }, [animation, actions]);
 

@@ -57,23 +57,20 @@ const ShaderText: React.FC<ShaderTextProps> = ({
       const bbox = hiddenTextRef.current.getBBox();
       
       if (bbox.width === 0 || bbox.height === 0) {
-        console.warn(`[${patternId}] BBox has zero dimensions, retrying...`);
         setTimeout(measureText, 50);
         return;
       }
-      
+
       const buffer = 0;
       const newDimensions = {
         width: Math.ceil(bbox.width + buffer),
         height: Math.ceil(bbox.height + buffer)
       };
-
-      console.log(`[${patternId}] ✅ Dimensions measured:, children: ${children}`, newDimensions);
       
       setTextDimensions(newDimensions);
       setIsReady(true);
     } catch (error) {
-      console.error(`[${patternId}] ❌ Error measuring text:`, error);
+      // Error measuring text
     }
   }, [children, patternId]);
 
@@ -94,22 +91,18 @@ const ShaderText: React.FC<ShaderTextProps> = ({
     // Se è la prima volta o stiamo riprendendo dopo una pausa
     if (lastTimeRef.current === 0) {
       lastTimeRef.current = time;
-      console.log(`[${patternId}] 🎬 Animation starting/resuming at time: ${time.toFixed(2)}ms`);
     }
-    
+
     // Calcola il delta time dalla ultima frame
     const deltaTime = time - lastTimeRef.current;
     lastTimeRef.current = time;
-    
+
     // Accumula solo il tempo quando l'animazione è attiva
     const oldAccumulatedTime = accumulatedTimeRef.current;
     accumulatedTimeRef.current += deltaTime;
-    
-    // Log ogni 60 frame (circa 1 secondo)
+
+    // Contatore frame
     frameCountRef.current++;
-    if (frameCountRef.current % 60 === 0) {
-      console.log(`[${patternId}] 🎞️ Frame ${frameCountRef.current} | deltaTime: ${deltaTime.toFixed(2)}ms | accumulatedTime: ${accumulatedTimeRef.current.toFixed(2)}ms | uTime: ${(accumulatedTimeRef.current * 0.001).toFixed(3)}s`);
-    }
     
     // Usa il tempo accumulato invece del tempo assoluto
     materialRef.current.uniforms.uTime.value = accumulatedTimeRef.current * 0.001;
@@ -122,7 +115,7 @@ const ShaderText: React.FC<ShaderTextProps> = ({
         setDataUrl(newDataUrl);
       }
     } catch (error) {
-      console.error(`[${patternId}] ❌ Error creating data URL:`, error);
+      // Error creating data URL
     }
     
     // Continua l'animazione solo se visibile
@@ -131,7 +124,6 @@ const ShaderText: React.FC<ShaderTextProps> = ({
     } else {
       // Reset lastTimeRef quando ci fermiamo per evitare salti
       lastTimeRef.current = 0;
-      console.log(`[${patternId}] ⏸️ Animation paused at accumulatedTime: ${accumulatedTimeRef.current.toFixed(2)}ms`);
     }
   }, [isVisible, patternId]);
 
@@ -139,8 +131,6 @@ const ShaderText: React.FC<ShaderTextProps> = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !isReady || textDimensions.width === 0 || textDimensions.height === 0) return;
-
-    console.log(`[${patternId}] 🔧 Setting up Three.js...`);
 
     // Cleanup precedente
     if (rendererRef.current) {
@@ -150,14 +140,12 @@ const ShaderText: React.FC<ShaderTextProps> = ({
       }
       rendererRef.current.dispose();
       rendererRef.current = null;
-      console.log(`[${patternId}] 🧹 Cleaned up previous renderer`);
     }
 
     // Reset dei timer
     accumulatedTimeRef.current = 0;
     lastTimeRef.current = 0;
     frameCountRef.current = 0;
-    console.log(`[${patternId}] 🔄 Reset time counters`);
 
     // Setup Three.js
     const scene = new THREE.Scene();
@@ -195,8 +183,6 @@ const ShaderText: React.FC<ShaderTextProps> = ({
     materialRef.current = material;
     geometryRef.current = geometry;
 
-    console.log(`[${patternId}] ✅ Three.js setup complete`);
-
     // Rendering iniziale IMMEDIATO per mostrare lo shader
     material.uniforms.uTime.value = 0.0;
     renderer.render(scene, camera);
@@ -204,17 +190,14 @@ const ShaderText: React.FC<ShaderTextProps> = ({
     try {
       const initialDataUrl = canvas.toDataURL('image/png');
       setDataUrl(initialDataUrl);
-      console.log(`[${patternId}] 🖼️ Initial render complete, dataUrl length: ${initialDataUrl.length}`);
     } catch (error) {
-      console.error(`[${patternId}] ❌ Error creating initial data URL:`, error);
+      // Error creating initial data URL
     }
 
     // Poi avvia l'animazione
-    console.log(`[${patternId}] ▶️ Starting animation loop...`);
     animationRef.current = requestAnimationFrame(animate);
 
     return () => {
-      console.log(`[${patternId}] 🛑 Cleanup: stopping animation and disposing resources`);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
@@ -235,23 +218,17 @@ const ShaderText: React.FC<ShaderTextProps> = ({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    console.log(`[${patternId}] 👁️ Setting up Intersection Observer...`);
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         const wasVisible = isVisible;
         const nowVisible = entry.isIntersecting;
-        
-        console.log(`[${patternId}] 👁️ Visibility changed: ${wasVisible ? 'visible' : 'hidden'} → ${nowVisible ? 'visible' : 'hidden'} | intersectionRatio: ${entry.intersectionRatio.toFixed(2)}`);
-        
+
         setIsVisible(nowVisible);
-        
+
         // Se diventa visibile e l'animazione non è attiva, riavviala
         if (nowVisible && !wasVisible && !animationRef.current && rendererRef.current) {
           // Reset lastTimeRef per evitare salti quando riprende
           lastTimeRef.current = 0;
-          const pauseDuration = performance.now() - pauseTimeRef.current;
-          console.log(`[${patternId}] ▶️ Resuming animation after ${pauseDuration.toFixed(2)}ms pause`);
           animationRef.current = requestAnimationFrame(animate);
         }
         // Se diventa invisibile, ferma l'animazione
@@ -260,7 +237,6 @@ const ShaderText: React.FC<ShaderTextProps> = ({
           animationRef.current = null;
           // Salva il momento della pausa
           pauseTimeRef.current = performance.now();
-          console.log(`[${patternId}] ⏸️ Paused animation | Total frames rendered: ${frameCountRef.current}`);
         }
       },
       { 
@@ -272,7 +248,6 @@ const ShaderText: React.FC<ShaderTextProps> = ({
     observer.observe(containerRef.current);
 
     return () => {
-      console.log(`[${patternId}] 👁️ Disconnecting Intersection Observer`);
       observer.disconnect();
     };
   }, [patternId, animate, isVisible]);
@@ -280,13 +255,11 @@ const ShaderText: React.FC<ShaderTextProps> = ({
   // Handle resize
   useEffect(() => {
     const handleResize = () => {
-      console.log(`[${patternId}] 📐 Window resized, remeasuring...`);
       measureText();
-      
+
       if (rendererRef.current && textDimensions.width > 0 && textDimensions.height > 0) {
         rendererRef.current.setSize(textDimensions.width, textDimensions.height);
         rendererRef.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        console.log(`[${patternId}] 📐 Renderer resized to ${textDimensions.width}x${textDimensions.height}`);
       }
     };
 
