@@ -9,7 +9,7 @@ interface CategoryTagsProps {
   index: number;
 }
 
-export const CategoryTags: React.FC<CategoryTagsProps> = ({ subtitle, index }) => {
+export const CategoryTags: React.FC<CategoryTagsProps> = ({ index }) => {
   const tagConfigs = [
     {
       // Streetwear - Culture Urbana

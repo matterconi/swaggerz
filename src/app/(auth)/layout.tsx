@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { SwagLoader } from "@/components/SwagLoader";
@@ -9,7 +9,7 @@ interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+function AuthLayoutContent({ children }: AuthLayoutProps) {
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [verificationMessage, setVerificationMessage] = useState<string>("Caricando...");
   const router = useRouter();
@@ -99,4 +99,12 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   }
 
   return <>{children}</>;
+}
+
+export default function AuthLayout({ children }: AuthLayoutProps) {
+  return (
+    <Suspense fallback={<SwagLoader message="Caricando..." />}>
+      <AuthLayoutContent>{children}</AuthLayoutContent>
+    </Suspense>
+  );
 }

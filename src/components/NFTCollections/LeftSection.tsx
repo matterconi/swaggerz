@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Collection } from './types';
 import CollectionBadge from './CollectionBadge';
 import { Check } from 'lucide-react';
-import ShaderText from '@/components/ShaderText';
 
 interface LeftSectionProps {
   collection: Collection;
@@ -107,7 +106,7 @@ export default function LeftSection({ collection }: LeftSectionProps) {
           </div>
         </div>
 
-        {/* White Button with ShaderText */}
+        {/* White Button with gradient text */}
         <div className="relative z-50 flex-shrink-0">
           <motion.button
             className="group/btn w-full bg-white hover:bg-zinc-100 rounded-xl lg:rounded-2xl px-6 py-3.5 lg:py-4 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl"
@@ -115,13 +114,9 @@ export default function LeftSection({ collection }: LeftSectionProps) {
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <ShaderText
-              className="font-bold text-sm lg:text-base tracking-wider uppercase"
-              fontSize="14px"
-              fontWeight="700"
-            >
+            <span className="font-bold text-sm lg:text-base tracking-wider uppercase bg-gradient-to-r from-yellow-600 via-orange-500 to-yellow-600 bg-clip-text text-transparent">
               ESPLORA COLLEZIONE
-            </ShaderText>
+            </span>
           </motion.button>
         </div>
       </div>

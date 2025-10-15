@@ -88,7 +88,7 @@ const Categories: React.FC = () => {
     let scrollTimeout: NodeJS.Timeout;
     let isScrolling = false;
     
-    const handleScroll = (e: Event) => {
+    const handleScroll = () => {
       if (isMobile && !isScrolling) {
         isScrolling = true;
         

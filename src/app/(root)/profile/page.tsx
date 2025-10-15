@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { User, Mail, Calendar, Shield, LogOut, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -81,9 +82,11 @@ export default function ProfilePage() {
             {/* User Avatar & Basic Info */}
             <div className="flex items-center gap-6">
               {user.image ? (
-                <img
+                <Image
                   src={user.image}
                   alt={user.name}
+                  width={64}
+                  height={64}
                   className="w-16 h-16 rounded-full border-2 border-orange-500/30"
                 />
               ) : (

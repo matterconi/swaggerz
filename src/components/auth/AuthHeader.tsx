@@ -7,7 +7,7 @@ interface AuthHeaderProps {
   isSignUp?: boolean;
 }
 
-export const AuthHeader = ({ title, subtitle, isSignUp = true }: AuthHeaderProps) => {
+export const AuthHeader = ({ title, subtitle }: AuthHeaderProps) => {
   return (
     <div className="text-center space-y-2">
       <h2 className="text-2xl font-bold text-white">

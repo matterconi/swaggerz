@@ -39,7 +39,7 @@ export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const { sendMagicLink, signIn, loading, error, clearError } = useAuth();
+  const { sendMagicLink, loading, error, clearError } = useAuth();
   const searchParams = useSearchParams();
 
   // Gestione errori dai magic link falliti

@@ -1,10 +1,9 @@
 'use client';
-import React, { Suspense, useEffect } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import React, { Suspense } from 'react';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls, ContactShadows } from '@react-three/drei';
 import { AvatarMan } from './AvatarMan';
 import { AvatarGirl } from './AvatarGirl';
-import { PerspectiveCamera } from 'three';
 
 
 interface AvatarCanvasProps {
@@ -27,22 +26,28 @@ export default function AvatarCanvas({
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
-        camera={{ position: [0, -0.2, 2.5], fov: 57 }}
-        shadows
-        gl={{ antialias: true, alpha: true }}
-      >
-        <Suspense fallback={null}>          
-          {/* Lighting */}
-          <ambientLight intensity={0.5} />
+          camera={{ position: [0, -0.2, 2.5], fov: 57 }}
+          shadows
+          gl={{
+            antialias: false, // Disable for better performance
+            alpha: true,
+            powerPreference: 'high-performance',
+            stencil: false,
+          }}
+          dpr={[1, 1.5]} // Limit pixel ratio for better performance
+          performance={{ min: 0.5 }} // Auto-degrade performance if needed
+        >
+          <Suspense fallback={null}>          
+          {/* Optimized Lighting - reduced for better performance */}
+          <ambientLight intensity={0.7} />
           <directionalLight
             position={[5, 8, 5]}
-            intensity={1.5}
+            intensity={1.2}
             castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
+            shadow-mapSize-width={512}
+            shadow-mapSize-height={512}
           />
-          <pointLight position={[-5, 5, -5]} intensity={0.5} />
-          
+
           {/* Avatar Model */}
           {avatarType === 'man' ? (
             <AvatarMan
@@ -58,24 +63,18 @@ export default function AvatarCanvas({
             />
           )}
           
-          {/* Contact Shadows */}
+          {/* Contact Shadows - optimized */}
           <ContactShadows
             position={[0, -1.2, 0]}
-            opacity={0.4}
-            scale={10}
-            blur={2}
-            far={3}
+            opacity={0.3}
+            scale={8}
+            blur={1.5}
+            far={2.5}
+            resolution={256}
           />
-          
-          {/* Additional Lighting */}
-          <hemisphereLight intensity={0.5} groundColor="#000000" />
-          <spotLight
-            position={[0, 5, 0]}
-            angle={0.5}
-            penumbra={1}
-            intensity={0.5}
-            castShadow
-          />
+
+          {/* Additional Lighting - simplified */}
+          <hemisphereLight intensity={0.4} groundColor="#000000" />
           
           {/* Orbit Controls */}
           <OrbitControls

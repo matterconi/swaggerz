@@ -1,38 +1,29 @@
 "use client";
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useId } from 'react';
 import * as THREE from 'three';
+import { sharedRenderer } from '@/lib/sharedRenderer';
 import { vertexShader, fragmentShader } from '@/constants/shaders';
 
 export default function ShaderCircle() {
+  const uniqueId = useId();
+  const taskId = `shader-circle-${uniqueId.replace(/:/g, '-')}`;
+
   const shaderCanvasRef = useRef<HTMLCanvasElement>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-  const animationRef = useRef<number | null>(null);
   const [shaderDataUrl, setShaderDataUrl] = useState<string>('');
+  const timeRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = shaderCanvasRef.current;
     if (!canvas) return;
 
-    if (rendererRef.current) {
-      rendererRef.current.dispose();
-    }
-
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      preserveDrawingBuffer: true,
-      antialias: true
-    });
-
-    renderer.setSize(48, 48);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
+    canvas.width = 48;
+    canvas.height = 48;
 
     const material = new THREE.ShaderMaterial({
       vertexShader,
@@ -47,32 +38,40 @@ export default function ShaderCircle() {
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    rendererRef.current = renderer;
     sceneRef.current = scene;
     materialRef.current = material;
 
-    const animate = (time: number): void => {
-      if (!materialRef.current || !rendererRef.current || !sceneRef.current) return;
-
-      materialRef.current.uniforms.uTime.value = time * 0.001;
-      rendererRef.current.render(sceneRef.current, camera);
-
-      if (canvas) {
-        setShaderDataUrl(canvas.toDataURL());
+    // Registra nel sharedRenderer (priorità 5 = decorativo, 20fps)
+    sharedRenderer.registerTask(
+      taskId,
+      scene,
+      camera,
+      canvas,
+      {
+        priority: 5,
+        targetFPS: 20
       }
+    );
 
-      animationRef.current = requestAnimationFrame(animate);
-    };
+    // Update dataUrl e uTime
+    const updateInterval = setInterval(() => {
+      if (canvas) {
+        try {
+          setShaderDataUrl(canvas.toDataURL());
 
-    animationRef.current = requestAnimationFrame(animate);
+          if (materialRef.current) {
+            timeRef.current += 0.05; // ~20fps
+            materialRef.current.uniforms.uTime.value = timeRef.current;
+          }
+        } catch {
+          // Error
+        }
+      }
+    }, 100); // ~20fps
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      if (renderer) {
-        renderer.dispose();
-      }
+      clearInterval(updateInterval);
+      sharedRenderer.unregisterTask(taskId);
       if (geometry) {
         geometry.dispose();
       }
@@ -80,7 +79,7 @@ export default function ShaderCircle() {
         material.dispose();
       }
     };
-  }, []);
+  }, [taskId]);
 
   return (
     <>

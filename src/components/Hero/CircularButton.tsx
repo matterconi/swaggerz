@@ -1,7 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useId } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
+import { sharedRenderer } from '@/lib/sharedRenderer';
 import { vertexShader, darkFragmentShader } from '@/constants/shaders';
 
 interface CircularButtonProps {
@@ -19,62 +20,51 @@ const CircularButton: React.FC<CircularButtonProps> = ({
   isHovered = false,
   setIsHovered
 }) => {
+  const uniqueId = useId();
+  const taskId = `circular-button-${uniqueId.replace(/:/g, '-')}`;
+
   const size = 140;
   const center = size / 2;
   const textRadius = 44;
-  
+
   // Calcola la spaziatura ottimale per riempire il cerchio
   const circumference = 2 * Math.PI * textRadius;
   const targetCoverage = 0.90; // Copri il 90% del perimetro
-  
+
   // Separa parole e calcola spazio necessario per le lettere
   const words = text.split(' ');
   const totalChars = text.replace(/\s/g, '').length; // Conta solo le lettere
   const numSpaces = words.length; // Numero di spazi totali (circolare)
-  
+
   // Stima larghezza base: ~9px per lettera + letter-spacing
   const baseCharWidth = 9.8;
   const totalCharWidth = totalChars * baseCharWidth;
-  
+
   // Calcola word-spacing in px
   const availableForSpaces = (circumference * targetCoverage) - totalCharWidth;
   const wordSpacingPx = numSpaces > 0 ? availableForSpaces / numSpaces : 0;
-  
+
   // Aggiungi spazio dopo l'ultima parola per chiudere il cerchio
   const textWithTrailingSpace = text + ' ';
 
   // Shader background refs
   const shaderCanvasRef = useRef<HTMLCanvasElement>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-  const animationRef = useRef<number | null>(null);
   const [shaderDataUrl, setShaderDataUrl] = useState<string>('');
+  const timeRef = useRef<number>(0);
 
-  // Setup Three.js shader
+  // Setup Three.js con sharedRenderer
   useEffect(() => {
     const canvas = shaderCanvasRef.current;
     if (!canvas) return;
-
-    // Cleanup precedente
-    if (rendererRef.current) {
-      rendererRef.current.dispose();
-    }
 
     // Setup Three.js
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      preserveDrawingBuffer: true,
-      antialias: true
-    });
-
-    renderer.setSize(size, size);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
+    canvas.width = size;
+    canvas.height = size;
 
     const material = new THREE.ShaderMaterial({
       vertexShader,
@@ -89,34 +79,40 @@ const CircularButton: React.FC<CircularButtonProps> = ({
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    // Salva i riferimenti
-    rendererRef.current = renderer;
     sceneRef.current = scene;
     materialRef.current = material;
 
-    const animate = (time: number): void => {
-      if (!materialRef.current || !rendererRef.current || !sceneRef.current) return;
-
-      materialRef.current.uniforms.uTime.value = time * 0.001;
-      rendererRef.current.render(sceneRef.current, camera);
-
-      // Converti il canvas in data URL
-      if (canvas) {
-        setShaderDataUrl(canvas.toDataURL());
+    // Registra nel sharedRenderer (priorità 2 = media, 30fps per bottoni interattivi)
+    sharedRenderer.registerTask(
+      taskId,
+      scene,
+      camera,
+      canvas,
+      {
+        priority: 2,
+        targetFPS: 30
       }
+    );
 
-      animationRef.current = requestAnimationFrame(animate);
-    };
+    // Update dataUrl e uTime
+    const updateInterval = setInterval(() => {
+      if (canvas) {
+        try {
+          setShaderDataUrl(canvas.toDataURL());
 
-    animationRef.current = requestAnimationFrame(animate);
+          if (materialRef.current) {
+            timeRef.current += 0.033; // ~30fps
+            materialRef.current.uniforms.uTime.value = timeRef.current;
+          }
+        } catch {
+          // Error
+        }
+      }
+    }, 66); // ~30fps
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      if (renderer) {
-        renderer.dispose();
-      }
+      clearInterval(updateInterval);
+      sharedRenderer.unregisterTask(taskId);
       if (geometry) {
         geometry.dispose();
       }
@@ -124,7 +120,7 @@ const CircularButton: React.FC<CircularButtonProps> = ({
         material.dispose();
       }
     };
-  }, [size]);
+  }, [size, taskId]);
 
   return (
     <div

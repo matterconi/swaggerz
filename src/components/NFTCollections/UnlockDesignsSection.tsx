@@ -1,56 +1,48 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useId, useMemo } from 'react';
 import ShaderText from '@/components/ShaderText';
 import CircularDiagram from './CircularDiagram';
 import * as THREE from 'three';
+import { sharedRenderer } from '@/lib/sharedRenderer';
 import { vertexShader, fragmentShader } from '@/constants/shaders';
 
 export default function UnlockDesignsSection() {
+  const uniqueId = useId();
+
   const [shaderDataUrls, setShaderDataUrls] = useState<string[]>(['', '', '']);
-  const canvasRefs = [
-    useRef<HTMLCanvasElement>(null),
-    useRef<HTMLCanvasElement>(null),
-    useRef<HTMLCanvasElement>(null)
-  ];
-  const renderersRef = useRef<THREE.WebGLRenderer[]>([]);
+  const canvasRef0 = useRef<HTMLCanvasElement>(null);
+  const canvasRef1 = useRef<HTMLCanvasElement>(null);
+  const canvasRef2 = useRef<HTMLCanvasElement>(null);
+  const canvasRefs = useMemo(() => [canvasRef0, canvasRef1, canvasRef2], []);
   const materialsRef = useRef<THREE.ShaderMaterial[]>([]);
-  const animationRef = useRef<number | null>(null);
+  const timeRefs = useRef<number[]>([0, 1, 2]); // Offset iniziali diversi
 
-  // Setup Three.js shader per tutti i cerchi con offset diversi
+  // Setup Three.js con sharedRenderer per tutti i cerchi
   useEffect(() => {
-    const scenes: THREE.Scene[] = [];
     const geometries: THREE.PlaneGeometry[] = [];
-    const timeOffsets = [0, 1000, 2000]; // Offset diversi per ogni shader
+    const materials: THREE.ShaderMaterial[] = [];
+    const taskIds: string[] = [];
 
-    // Setup per ogni canvas
+    // Setup per ogni canvas con sharedRenderer
     canvasRefs.forEach((canvasRef, index) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      if (renderersRef.current[index]) {
-        renderersRef.current[index].dispose();
-      }
+      const taskId = `unlock-circle-${uniqueId.replace(/:/g, '-')}-${index}`;
+      taskIds.push(taskId);
 
       const scene = new THREE.Scene();
       const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: true,
-        preserveDrawingBuffer: true,
-        antialias: true
-      });
-
-      renderer.setSize(48, 48);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setClearColor(0x000000, 0);
+      canvas.width = 48;
+      canvas.height = 48;
 
       const material = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader,
         uniforms: {
-          uTime: { value: timeOffsets[index] }
+          uTime: { value: timeRefs.current[index] }
         },
         transparent: true
       });
@@ -59,43 +51,54 @@ export default function UnlockDesignsSection() {
       const mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
 
-      renderersRef.current[index] = renderer;
-      scenes.push(scene);
       materialsRef.current[index] = material;
       geometries.push(geometry);
+      materials.push(material);
+
+      // Registra nel sharedRenderer (priorità 5 = decorativo, 20fps)
+      sharedRenderer.registerTask(
+        taskId,
+        scene,
+        camera,
+        canvas,
+        {
+          priority: 5,
+          targetFPS: 20
+        }
+      );
     });
 
-    const animate = (time: number): void => {
+    // Update dataUrls e uTime per tutti i canvas
+    const updateInterval = setInterval(() => {
       const newDataUrls: string[] = [];
 
       canvasRefs.forEach((canvasRef, index) => {
-        const material = materialsRef.current[index];
-        const renderer = renderersRef.current[index];
-        const scene = scenes[index];
         const canvas = canvasRef.current;
+        const material = materialsRef.current[index];
 
-        if (material && renderer && scene && canvas) {
-          material.uniforms.uTime.value = time * 0.001 + timeOffsets[index];
-          renderer.render(scene, new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1));
-          newDataUrls[index] = canvas.toDataURL();
+        if (canvas && material) {
+          try {
+            newDataUrls[index] = canvas.toDataURL();
+            timeRefs.current[index] += 0.05; // ~20fps
+            material.uniforms.uTime.value = timeRefs.current[index];
+          } catch {
+            newDataUrls[index] = '';
+          }
+        } else {
+          newDataUrls[index] = '';
         }
       });
 
       setShaderDataUrls(newDataUrls);
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animationRef.current = requestAnimationFrame(animate);
+    }, 100); // ~20fps
 
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      renderersRef.current.forEach(renderer => renderer?.dispose());
+      clearInterval(updateInterval);
+      taskIds.forEach(id => sharedRenderer.unregisterTask(id));
       geometries.forEach(geometry => geometry?.dispose());
-      materialsRef.current.forEach(material => material?.dispose());
+      materials.forEach(material => material?.dispose());
     };
-  }, []);
+  }, [uniqueId, canvasRefs]);
 
   return (
     <section className="w-full min-h-screen py-20">

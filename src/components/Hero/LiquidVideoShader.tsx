@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useId } from 'react';
 import * as THREE from 'three';
+import { sharedRenderer } from '@/lib/sharedRenderer';
 import { vertexShader, fragmentShader } from './shaders/liquidShader';
 
 interface LiquidVideoShaderProps {
@@ -15,6 +16,9 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
   className = "",
   containerRef: externalContainerRef
 }) => {
+  const uniqueId = useId();
+  const taskId = `liquid-video-${uniqueId.replace(/:/g, '-')}`;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const internalContainerRef = useRef<HTMLDivElement>(null);
@@ -22,10 +26,8 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
 
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const materialRef = useRef<THREE.ShaderMaterial | null>(null);
   const mouseRef = useRef(new THREE.Vector2(-10, -10));
-  const animationIdRef = useRef<number | null>(null);
 
   // Use external container ref if provided, otherwise use internal
   const containerRef = externalContainerRef || internalContainerRef;
@@ -53,20 +55,12 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
       const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
       cameraRef.current = camera;
 
-      // Renderer
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        alpha: false,
-        antialias: true,
-      });
-      renderer.setClearColor(0x000000, 1);
-      rendererRef.current = renderer;
-
-      // Video texture
+      // Video texture with optimized settings
       const videoTexture = new THREE.VideoTexture(video);
       videoTexture.minFilter = THREE.LinearFilter;
       videoTexture.magFilter = THREE.LinearFilter;
-      videoTexture.format = THREE.RGBAFormat;
+      videoTexture.format = THREE.RGBFormat; // RGB instead of RGBA for better performance
+      videoTexture.generateMipmaps = false; // Disable mipmaps for videos
 
       // Shader material
       const material = new THREE.ShaderMaterial({
@@ -90,26 +84,45 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
       const handleResize = () => {
         const width = parentElement.clientWidth;
         const height = parentElement.clientHeight;
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        canvas.width = width;
+        canvas.height = height;
         material.uniforms.uResolution.value.set(width, height);
       };
       handleResize();
 
-      // Animation
-      const animate = () => {
-        animationIdRef.current = requestAnimationFrame(animate);
-        if (material.uniforms.uTime) {
-          material.uniforms.uTime.value += 0.016;
+      // Registra il task nel shared renderer (priorità 0 = massima, 60fps per hero video)
+      sharedRenderer.registerTask(
+        taskId,
+        scene,
+        camera,
+        canvas,
+        {
+          priority: 0,
+          targetFPS: 60
         }
-        renderer.render(scene, camera);
+      );
+
+      // Update shader time uniform (il rendering è gestito dal sharedRenderer)
+      let lastTime = 0;
+      const updateUniforms = (time: number) => {
+        if (material.uniforms.uTime) {
+          const deltaTime = (time - lastTime) * 0.001;
+          lastTime = time;
+          material.uniforms.uTime.value += deltaTime;
+        }
+        requestAnimationFrame(updateUniforms);
       };
-      animate();
+      requestAnimationFrame(updateUniforms);
 
       // Resize observer
       const resizeObserver = new ResizeObserver(handleResize);
       resizeObserver.observe(parentElement);
       window.addEventListener('resize', handleResize);
+
+      // Auto-play video (no intersection observer)
+      if (video) {
+        video.play().catch(() => {});
+      }
 
       // Mouse events
       const container = containerRef.current;
@@ -134,9 +147,8 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
 
       // Cleanup
       return () => {
-        if (animationIdRef.current) {
-          cancelAnimationFrame(animationIdRef.current);
-        }
+        sharedRenderer.unregisterTask(taskId);
+
         resizeObserver.disconnect();
         window.removeEventListener('resize', handleResize);
 
@@ -147,7 +159,6 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
 
         geometry.dispose();
         material.dispose();
-        renderer.dispose();
         videoTexture.dispose();
       };
     };
@@ -168,7 +179,7 @@ const LiquidVideoShader: React.FC<LiquidVideoShaderProps> = ({
       video.removeEventListener('canplay', handleCanPlay);
       video.removeEventListener('loadeddata', handleCanPlay);
     };
-  }, [containerRef, videoSrc]);
+  }, [containerRef, videoSrc, taskId]);
 
   const content = (
     <>

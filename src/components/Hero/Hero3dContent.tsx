@@ -1,18 +1,12 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
-import ShaderText from '@/components/ShaderText';
 import { motion } from 'framer-motion';
-import AvatarCanvas from '@/components/Avatar/AvatarCanvas';
 import RectangularButton from './RectangularButton';
-import { Flame } from 'lucide-react';
+import ShaderText from '@/components/ShaderText';
+import AvatarCanvas from '@/components/Avatar/AvatarCanvas';
 
-interface Hero3dContentProps {
-  onHover: () => void;
-  onLeave: () => void;
-}
-
-const Hero3dContent: React.FC<Hero3dContentProps> = ({ onHover, onLeave }) => {
+const Hero3dContent: React.FC = () => {
   const titleContainerRef = useRef<HTMLDivElement>(null);
   const [titleFontSize, setTitleFontSize] = useState('2rem');
 
@@ -53,8 +47,6 @@ const Hero3dContent: React.FC<Hero3dContentProps> = ({ onHover, onLeave }) => {
   return (
     <motion.div
       className="group relative h-full"
-      onMouseEnter={onHover}
-      onMouseLeave={onLeave}
     >
       {/* Layout responsive: colonna singola su mobile, due colonne su desktop */}
       <div className="relative h-full flex flex-col lg:flex-row p-8 lg:p-10">
@@ -118,11 +110,11 @@ const Hero3dContent: React.FC<Hero3dContentProps> = ({ onHover, onLeave }) => {
             </div>
           </div>
 
-          {/* Avatars affiancati - desktop (lg+) */}
-          <div className="h-full w-full hidden lg:flex gap-4 max-h-[450px]">
-            {/* Avatar Man */}
+          {/* Avatar singolo - desktop (lg+) - performance ottimizzate */}
+          <div className="h-full w-full hidden lg:flex justify-center max-h-[450px]">
+            {/* Avatar Man - carica solo 1 per migliori performance */}
             <motion.div
-              className="aspect-[9/16] h-full "
+              className="aspect-[9/16] h-full"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
@@ -136,21 +128,8 @@ const Hero3dContent: React.FC<Hero3dContentProps> = ({ onHover, onLeave }) => {
               />
             </motion.div>
 
-            {/* Avatar Girl */}
-            <motion.div
-              className="h-full aspect-[9/16]"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              <AvatarCanvas
-                avatarType="girl"
-                animation="idle"
-                enableZoom={false}
-                minAzimuthAngle={-Math.PI / 2}
-                maxAzimuthAngle={Math.PI / 2}
-              />
-            </motion.div>
+            {/* Avatar Girl - RIMOSSO per performance
+                Riduci da 2 a 1 avatar = -50% carico GPU */}
           </div>
         </div>
       </div>

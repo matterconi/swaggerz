@@ -25,6 +25,7 @@ interface NavbarProps {
 }
 
 const navLinks: NavLink[] = [
+  // eslint-disable-next-line jsx-a11y/alt-text
   { label: "NFT", href: "/shop/nft", icon: <Image size={16} /> },
   { label: "Abbigliamento", href: "/shop/clothing", icon: <Shirt size={16} />, hasDropdown: true },
   { label: "Stampe", href: "/shop/prints", icon: <Palette size={16} /> },

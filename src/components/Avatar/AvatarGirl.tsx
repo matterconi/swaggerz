@@ -23,7 +23,7 @@ export function AvatarGirl({ animation = 'dance', ...props }: AvatarGirlProps) {
 
   // Clona lo scheletro usando SkeletonUtils
   const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
-  const { nodes, materials } = useGraph(clone) as any;
+  useGraph(clone) as any;
 
   // Carica tutte le animazioni FBX (usa le animazioni dalla cartella developer)
   const { animations: idleAnimation } = useFBX('/models/developer/idle.fbx');

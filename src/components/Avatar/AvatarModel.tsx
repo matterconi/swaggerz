@@ -18,12 +18,27 @@ interface AvatarModelProps {
 export function AvatarModel({ animation = 'idle', ...props }: AvatarModelProps) {
   const group = useRef<Group>(null);
 
-  // ✅ Carica il modello GLTF
+  // ✅ Carica il modello GLTF con ottimizzazioni
   const { scene } = useGLTF('/models/avatar/avatar-full.glb');
 
   // ✅ Clona lo scheletro usando SkeletonUtils (importante!)
-  const clone = React.useMemo(() => SkeletonUtils.clone(scene), [scene]);
-  const { nodes, materials } = useGraph(clone) as any;
+  const clone = React.useMemo(() => {
+    const cloned = SkeletonUtils.clone(scene);
+
+    // Ottimizza i materiali per migliori performance
+    cloned.traverse((child: any) => {
+      if (child.isMesh) {
+        child.castShadow = false; // Disable shadow casting for performance
+        child.receiveShadow = false;
+        if (child.material) {
+          child.material.shadowSide = THREE.FrontSide;
+        }
+      }
+    });
+
+    return cloned;
+  }, [scene]);
+  useGraph(clone) as any;
 
   // ✅ Carica tutte le animazioni FBX (usando quelle di developer come test)
   const { animations: idleAnimation } = useFBX('/models/developer/idle.fbx');
@@ -57,11 +72,7 @@ export function AvatarModel({ animation = 'idle', ...props }: AvatarModelProps) 
 
   // ✅ Cambia animazione quando cambia la prop
   useEffect(() => {
-    console.log('🔍 Available actions:', Object.keys(actions));
-
     if (actions[animation]) {
-      console.log(`🎬 Playing animation: ${animation}`);
-
       // Ferma tutte le altre animazioni
       Object.keys(actions).forEach((key) => {
         if (key !== animation && actions[key]) {
@@ -74,16 +85,8 @@ export function AvatarModel({ animation = 'idle', ...props }: AvatarModelProps) 
       return () => {
         actions[animation]?.fadeOut(0.5);
       };
-    } else {
-      console.warn(`⚠️ Animation "${animation}" not found in actions`);
     }
   }, [animation, actions]);
-
-  // Log dei nodi disponibili per debug (solo una volta)
-  React.useEffect(() => {
-    console.log('🔍 Available nodes in Avatar:', Object.keys(nodes));
-    console.log('🎨 Available materials in Avatar:', Object.keys(materials));
-  }, [nodes, materials]);
 
   return (
     <group ref={group} {...props} dispose={null}>

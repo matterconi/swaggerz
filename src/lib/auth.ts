@@ -37,7 +37,6 @@ export const auth = betterAuth({
           // ✅ DECOMMENTATO - Ora invia davvero l'email con il tipo
           await sendMagicLinkEmailWithUrl(email, url, authType);
           console.log('✅ Magic link email sent successfully');
-          return true;
         } catch (error) {
           console.error('❌ Error sending magic link:', error);
           throw error;

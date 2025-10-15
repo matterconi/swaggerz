@@ -6,7 +6,6 @@ import {
   varchar,
   boolean,
   integer,
-  uuid,
   index
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';

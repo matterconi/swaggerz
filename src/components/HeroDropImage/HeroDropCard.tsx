@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRandomDirections } from "@/hooks/useRandomDirections"
 import NavigationDots from './NavigationDots';
 import CollectionInfoOverlay from './CollectionInfoOverlay';
-import DynamicGlowEffect from './DynamicGlowEffect';
 import LatestDropsBadge from './LatestDropsBadge';
 
 

@@ -66,7 +66,7 @@ export default function HeroStaticShowcase() {
           Immersive Experience
         </h3>
         <p className="text-zinc-300 text-lg">
-          Preparati a un'esperienza 3D interattiva rivoluzionaria
+          Preparati a un&apos;esperienza 3D interattiva rivoluzionaria
         </p>
       </motion.div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Collection } from './types';
@@ -11,27 +11,7 @@ interface RightSectionProps {
   onNext?: () => void;
 }
 
-const colorMap = {
-  emerald: {
-    shadow: 'rgba(16, 185, 129, 0.6)',
-    gradient: 'radial-gradient(ellipse 80% 50% at 20% 20%, rgba(16, 185, 129, 0.4), transparent 60%), radial-gradient(ellipse 70% 60% at 80% 80%, rgba(52, 211, 153, 0.3), transparent 70%)'
-  },
-  cyan: {
-    shadow: 'rgba(6, 182, 212, 0.6)',
-    gradient: 'radial-gradient(ellipse 80% 50% at 20% 20%, rgba(6, 182, 212, 0.4), transparent 60%), radial-gradient(ellipse 70% 60% at 80% 80%, rgba(34, 211, 238, 0.3), transparent 70%)'
-  },
-  orange: {
-    shadow: 'rgba(249, 115, 22, 0.6)',
-    gradient: 'radial-gradient(ellipse 80% 50% at 20% 20%, rgba(249, 115, 22, 0.4), transparent 60%), radial-gradient(ellipse 70% 60% at 80% 80%, rgba(251, 146, 60, 0.3), transparent 70%)'
-  },
-  purple: {
-    shadow: 'rgba(168, 85, 247, 0.6)',
-    gradient: 'radial-gradient(ellipse 80% 50% at 20% 20%, rgba(168, 85, 247, 0.4), transparent 60%), radial-gradient(ellipse 70% 60% at 80% 80%, rgba(192, 132, 252, 0.3), transparent 70%)'
-  }
-};
-
-export default function RightSection({ collection, onPrevious, onNext }: RightSectionProps) {
-  const [hoveredImg, setHoveredImg] = useState<number | null>(null);
+export default function RightSection({ collection }: RightSectionProps) {
   return (
     <div className="relative w-full h-full overflow-hidden z-0 rounded-r-3xl">
       <div className="relative z-50 flex flex-col h-full py-8 lg:py-10 gap-5 lg:gap-6 pr-10">

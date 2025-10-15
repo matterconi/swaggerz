@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { User, Mail, Calendar, CheckCircle, ArrowRight, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -73,9 +74,11 @@ export default function DashboardPage() {
           <div className="bg-zinc-900/40 backdrop-blur-sm border border-zinc-800/50 rounded-2xl p-8 mb-8">
             <div className="flex items-center gap-6 mb-6">
               {user.image ? (
-                <img
+                <Image
                   src={user.image}
                   alt={user.name}
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-full border-2 border-orange-500/30"
                 />
               ) : (
